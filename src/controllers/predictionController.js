@@ -10,18 +10,28 @@ const savePrediction = async (req, res) => {
     }
 
     try {
-        // Validar que el partido existe y no ha terminado
+        // Validar que el partido existe
         const match = await Match.findById(match_id);
-        
+
         if (!match) return res.status(404).json({ error: 'Partido no existe' });
-        
+
+        // 1. VALIDACIÓN EXISTENTE: Si el admin ya lo cerró
         if (match.status === 'finished') {
-            return res.status(400).json({ error: 'El partido ya terminó, no puedes apostar.' });
+            return res.status(400).json({ error: 'El partido ya terminó, no puedes ingresar el posible marcador.' });
+        }
+
+        // 2. NUEVA VALIDACIÓN: Por fecha y hora
+        const now = new Date();
+        const matchDate = new Date(match.match_date);
+
+        // Si la hora actual es mayor o igual a la del partido, bloqueamos.
+        if (now >= matchDate) {
+            return res.status(400).json({ error: '⏳ El partido ya comenzó. Predicciones cerradas.' });
         }
 
         // Guardar predicción
         await Prediction.save(userId, match_id, pred_home, pred_away);
-        
+
         res.json({ message: 'Pronóstico guardado' });
 
     } catch (error) {

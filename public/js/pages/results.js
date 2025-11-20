@@ -20,12 +20,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             const miPred = myPreds.find(p => p.match_id === match.match_id);
             const homeVal = miPred ? miPred.pred_home : '';
             const awayVal = miPred ? miPred.pred_away : '';
+
+            // CÁLCULO DE TIEMPO (NUEVO)
+            const now = new Date();
+            const matchDate = new Date(match.match_date);
+            const yaEmpezo = now >= matchDate; // True si ya pasó la hora
+
             const card = document.createElement('div');
             card.className = 'match-card';
-            const dateStr = new Date(match.match_date).toLocaleString([], { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+            const dateStr = matchDate.toLocaleString([], { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 
             let contenidoHTML = `
-                <div style="font-size:0.8em; color:#aaa; margin-bottom:10px;">${dateStr}</div>
+                <div style="font-size:0.8em; color: var(--text-muted); margin-bottom:10px;">${dateStr}</div>
                 <div class="teams-row">
                     <span>${match.team_home}</span>
                     <span class="vs-badge">VS</span>
@@ -33,43 +39,58 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             `;
 
+            // CASO 1: Partido Finalizado (Ya tiene marcador oficial)
             if (match.status === 'finished') {
-                // PARTIDO FINALIZADO: Muestra resultados y puntos
                 let pointsHtml = '<span style="color:#FF6347; font-size:0.8em;">No participaste</span>';
                 if (miPred) {
                     const pts = miPred.points;
-                    let color = '#667eea'; // Default (Error)
+                    let color = '#667eea';
                     let texto = 'Error';
                     if (pts === 3) { color = '#00FFC0'; texto = '+3 Pts 🎯'; }
                     else if (pts === 1) { color = '#FFD700'; texto = '+1 Pt ✅'; }
                     else if (pts === 0) { color = '#FF6347'; texto = '0 Pts ❌'; }
 
-                    pointsHtml = `<span style="background:${color}; color:${pts === 1 ? '#121212' : 'white'}; padding:4px 10px; border-radius:10px; font-weight:bold; font-size:0.9em; text-shadow: 0 0 5px #000;">${texto}</span>`;
+                    pointsHtml = `<span style="background:${color}; color:${pts === 1 ? '#121212' : 'white'}; padding:4px 10px; border-radius:10px; font-weight:bold; font-size:0.9em;">${texto}</span>`;
                 }
 
                 contenidoHTML += `
-                    <div style="background:#222; padding:10px; border-radius:8px;">
-                        <div style="color:#888; font-size:0.8em;">Resultado Final</div>
+                    <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; margin-top:10px;">
+                        <div style="color:var(--text-muted); font-size:0.7em; text-transform:uppercase;">Final</div>
                         <div class="final-score">${match.score_home} - ${match.score_away}</div>
-                        <div style="border-top:1px solid #444; margin-top:5px; padding-top:10px;">
-                            <small style="color:#ccc;">Tu predicción: <b>${homeVal !== '' ? homeVal : '?'} - ${awayVal !== '' ? awayVal : '?'}</b></small><br><br>
+                        <div style="border-top:1px solid var(--border); margin-top:5px; padding-top:10px;">
+                            <small style="color:var(--text-muted);">Tu predicción: <b>${homeVal !== '' ? homeVal : '?'} - ${awayVal !== '' ? awayVal : '?'}</b></small><br><br>
                             ${pointsHtml}
                         </div>
                     </div>
                 `;
-            } else {
-                // PARTIDO PENDIENTE: Muestra inputs
+            }
+            // CASO 2: Partido En Juego / Tiempo Cumplido (NUEVO)
+            else if (yaEmpezo) {
+                contenidoHTML += `
+                     <div style="background:rgba(255, 215, 0, 0.1); border:1px solid #FFD700; padding:15px; border-radius:8px; margin-top:10px;">
+                        <div style="color:#FFD700; font-weight:bold; font-size:0.9em; margin-bottom:5px;">
+                            <i class="ri-time-line"></i> APUESTAS CERRADAS
+                        </div>
+                        <div style="color:var(--text-main); font-size:0.9em;">
+                            Tu predicción: <strong>${homeVal !== '' ? homeVal : '-'}</strong> vs <strong>${awayVal !== '' ? awayVal : '-'}</strong>
+                        </div>
+                    </div>
+                `;
+            }
+            // CASO 3: Partido Pendiente (Se puede apostar)
+            else {
                 contenidoHTML += `
                     <div class="prediction-box">
-                        <input type="number" class="pred-input" id="p_home_${match.match_id}" value="${homeVal}" min="0">
+                        <input type="number" class="pred-input" id="p_home_${match.match_id}" value="${homeVal}" min="0" placeholder="-">
                         <span style="font-weight:bold;">-</span>
-                        <input type="number" class="pred-input" id="p_away_${match.match_id}" value="${awayVal}" min="0">
+                        <input type="number" class="pred-input" id="p_away_${match.match_id}" value="${awayVal}" min="0" placeholder="-">
                     </div>
-                    <button onclick="guardarPrediccion(${match.match_id})" class="nav-btn" style="width:100%; margin-top:15px; background:#00FFC0; color:black;">
+                    <button onclick="guardarPrediccion(${match.match_id})" class="nav-btn" style="width:100%; margin-top:15px; background:var(--accent); color:#111;">
                         Guardar
                     </button>
                 `;
             }
+
             card.innerHTML = contenidoHTML;
             container.appendChild(card);
         });
