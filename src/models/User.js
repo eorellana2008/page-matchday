@@ -2,9 +2,9 @@ const pool = require('../../db/connection');
 
 const User = {
 
-        saveResetToken: async (userId, token) => {
+    saveResetToken: async (userId, token) => {
         // El token expira en 1 hora
-        const expires = new Date(Date.now() + 3600000); 
+        const expires = new Date(Date.now() + 3600000);
         const query = 'UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE user_id = ?';
         return await pool.query(query, [token, expires, userId]);
     },
@@ -70,10 +70,11 @@ const User = {
     },
 
     // Usado en Perfil
+    // Usado en Perfil
     findById: async (id) => {
         const query = `
             SELECT u.user_id, u.username, u.email, u.created_at, 
-                   u.password_hash,
+                   u.password_hash, u.avatar, 
                    m.name as municipality, d.name as department, r.name as role,
                    (SELECT COALESCE(SUM(points), 0) FROM predictions WHERE user_id = u.user_id) as total_points
             FROM users u
@@ -130,9 +131,9 @@ const User = {
         return rows[0];
     },
 
-    updateBasicInfo: async (id, username, email) => {
-        const query = 'UPDATE users SET username = ?, email = ? WHERE user_id = ?';
-        return await pool.query(query, [username, email, id]);
+    updateBasicInfo: async (id, username, email, avatar) => {
+        const query = 'UPDATE users SET username = ?, email = ?, avatar = ? WHERE user_id = ?';
+        return await pool.query(query, [username, email, avatar, id]);
     },
 };
 

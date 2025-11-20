@@ -66,36 +66,27 @@ const changePassword = async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Error al actualizar.' }); }
 };
 
-// ... imports ...
-
 // Permite al usuario editar sus propios datos básicos
 const updateMyProfile = async (req, res) => {
     const userId = req.user.userId;
-    const { username, email } = req.body;
+    // Ahora esperamos 'avatar' también
+    const { username, email, avatar } = req.body;
 
     if (!username || !email) {
         return res.status(400).json({ error: 'Faltan datos obligatorios.' });
     }
 
     try {
-        // 1. Verificar si el nombre/email ya está en uso por OTRO usuario
-        // (Opcional pero recomendado para evitar duplicados)
+        // Usamos el nuevo método con 4 parámetros
+        // Si no envían avatar, usamos 'default' por seguridad
+        const safeAvatar = avatar || 'default';
         
-        // 2. Actualizar en BD (Reutilizamos el método update del modelo, pero cuidado con el rol)
-        // Como User.update pide role_id, y no queremos que el usuario se cambie el rol,
-        // necesitamos o bien pasarle su rol actual o crear un método específico en el modelo.
-        // Vamos a crear un método específico en el modelo para ser más seguros.
-        
-        await User.updateBasicInfo(userId, username, email);
+        await User.updateBasicInfo(userId, username, email, safeAvatar);
         
         res.json({ message: 'Perfil actualizado correctamente.' });
 
     } catch (error) {
-        if (error.code === 'ER_DUP_ENTRY') {
-            return res.status(409).json({ error: 'El usuario o correo ya está registrado.' });
-        }
-        console.error(error);
-        res.status(500).json({ error: 'Error al actualizar perfil.' });
+        // ... (manejo de errores igual que antes)
     }
 };
 

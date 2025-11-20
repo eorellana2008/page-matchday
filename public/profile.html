@@ -204,12 +204,42 @@
             <form id="formEditProfile">
                 <label>Usuario:</label>
                 <input type="text" id="my_username" required>
-                
+
                 <label>Correo:</label>
                 <input type="email" id="my_email" required>
+                <label>Elige tu Avatar:</label>
+                <div class="avatar-selector"
+                    style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;">
+
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="default" checked>
+                        <div class="icon-box"><i class="ri-user-3-line"></i></div>
+                    </label>
+
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="ball">
+                        <div class="icon-box"><i class="ri-football-line"></i></div>
+                    </label>
+
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="robot">
+                        <div class="icon-box"><i class="ri-robot-line"></i></div>
+                    </label>
+
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="alien">
+                        <div class="icon-box"><i class="ri-aliens-line"></i></div>
+                    </label>
+
+                    <label class="avatar-option">
+                        <input type="radio" name="avatar" value="trophy">
+                        <div class="icon-box"><i class="ri-cup-line"></i></div>
+                    </label>
+                </div>
 
                 <div class="modal-buttons">
-                    <button type="button" class="btn-cancel" onclick="toggleModal('modalEditProfile', false)">Cancelar</button>
+                    <button type="button" class="btn-cancel"
+                        onclick="toggleModal('modalEditProfile', false)">Cancelar</button>
                     <button type="submit" class="btn-save">Guardar Cambios</button>
                 </div>
             </form>

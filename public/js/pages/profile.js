@@ -1,7 +1,10 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const token = sessionStorage.getItem('userToken');
+    
+    // Variable para guardar los datos actuales del usuario (para el modal de edición)
+    let currentUserData = {};
 
-        const setupToggle = (inputId, toggleId) => {
+    const setupToggle = (inputId, toggleId) => {
         const input = document.getElementById(inputId);
         const toggle = document.getElementById(toggleId);
         if (input && toggle) {
@@ -16,12 +19,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Configurar Toggles de Cambio de Contraseña
     setupToggle('current_pass', 'toggleCurrentPass');
     setupToggle('new_pass', 'toggleNewPass');
-    
-    // 1. CARGAR DATOS
+
+    // 1. CARGAR DATOS DEL PERFIL
     try {
         const res = await fetch('/api/users/profile', { headers: { 'Authorization': `Bearer ${token}` } });
         if (res.status === 401) throw new Error('Token expirado');
         const user = await res.json();
+
+        // Guardamos los datos para usarlos luego en el modal
+        currentUserData = user;
 
         document.getElementById('profileName').textContent = user.username;
         document.getElementById('profileEmail').textContent = user.email;
@@ -30,31 +36,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('profileLocation').textContent = `${user.municipality || 'N/A'}, ${user.department || ''}`;
         document.getElementById('profilePoints').textContent = user.total_points;
 
-        // 🚨 LÓGICA DE ROLES ACTUALIZADA: Muestra botón si es Staff
+        // --- LÓGICA DE AVATAR (NUEVO) ---
+        const avatarEl = document.getElementById('profileAvatar');
+        const avatarMap = {
+            'default': 'ri-user-3-line',
+            'ball': 'ri-football-line',
+            'robot': 'ri-robot-line',
+            'alien': 'ri-aliens-line',
+            'trophy': 'ri-cup-line'
+        };
+        // Si no tiene avatar o es desconocido, usa default
+        const iconClass = avatarMap[user.avatar] || 'ri-user-3-line';
+        avatarEl.innerHTML = `<i class="${iconClass}"></i>`;
+
+
+        // 🚨 LÓGICA DE ROLES: Muestra botón si es Staff
         const staffRoles = ['superadmin', 'admin', 'moderator'];
         if (staffRoles.includes(user.role)) {
             const btnAdmin = document.getElementById('btnAdminPanel');
-            btnAdmin.classList.remove('hidden');
+            if (btnAdmin) btnAdmin.classList.remove('hidden');
         }
 
+        // Estadísticas
         if (user.stats) {
             document.getElementById('profileEfficiency').textContent = `${user.stats.efficiency}%`;
-            // Opcional: cambiar color si es alto/bajo
-            if(user.stats.efficiency >= 50) document.getElementById('profileEfficiency').style.color = 'var(--success)';
+            if (user.stats.efficiency >= 50) document.getElementById('profileEfficiency').style.color = 'var(--success)';
         }
 
-        // 2. Mostrar Próximo Partido
+        // Próximo Partido
         const nextMatchEl = document.getElementById('nextMatchInfo');
         const nextTimeEl = document.getElementById('nextMatchTime');
-        
+
         if (user.nextMatch) {
             const date = new Date(user.nextMatch.match_date);
-            const timeStr = date.toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' });
-            
+            const timeStr = date.toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
             nextMatchEl.innerHTML = `${user.nextMatch.team_home} <span style="color:var(--text-muted)">vs</span> ${user.nextMatch.team_away}`;
             nextTimeEl.textContent = timeStr;
-            
-            // Hacemos click en la card para ir a votar directamente
+
             document.getElementById('nextMatchCard').style.cursor = 'pointer';
             document.getElementById('nextMatchCard').onclick = () => window.location.href = '/results.html';
         } else {
@@ -117,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // 4. HISTORIAL (Función Global)
+    // 4. HISTORIAL TICKETS (Función Global)
     window.abrirModalHistorial = async () => {
         const historyList = document.getElementById('historyList');
         window.toggleModal('modalHistory', true);
@@ -151,6 +170,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    // 5. HISTORIAL PUNTOS (Función Global)
     window.abrirHistorialPuntos = async () => {
         const listContainer = document.getElementById('pointsList');
         window.toggleModal('modalPointsHistory', true);
@@ -166,12 +186,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             listContainer.innerHTML = history.map(h => {
-                // Lógica de colores según puntos
                 let badgeColor = '#FF6347'; // Rojo (0 pts)
                 let ptsText = '+0';
-                
-                if (h.points === 3) { badgeColor = '#00FFC0'; ptsText = '+3 🎯'; } // Verde (3 pts)
-                else if (h.points === 1) { badgeColor = '#FFD700'; ptsText = '+1 ✅'; } // Dorado (1 pt)
+                if (h.points === 3) { badgeColor = '#00FFC0'; ptsText = '+3 🎯'; } 
+                else if (h.points === 1) { badgeColor = '#FFD700'; ptsText = '+1 ✅'; } 
 
                 const date = new Date(h.match_date).toLocaleDateString();
 
@@ -192,40 +210,50 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>
                 `;
             }).join('');
-
         } catch (e) {
             console.error(e);
             listContainer.innerHTML = '<p style="text-align: center; color: var(--danger);">Error al cargar datos.</p>';
         }
     };
-    // ABRIR MODAL Y PRELLENAR DATOS
+
+    // 6. EDITAR PERFIL (Abrir Modal)
     window.abrirModalEditarPerfil = () => {
-        // Usamos los valores que ya están en pantalla para prellenar
         document.getElementById('my_username').value = document.getElementById('profileName').textContent;
         document.getElementById('my_email').value = document.getElementById('profileEmail').textContent;
+        
+        // Pre-seleccionar el avatar actual
+        const currentAvatar = currentUserData.avatar || 'default';
+        const radioToCheck = document.querySelector(`input[name="avatar"][value="${currentAvatar}"]`);
+        if (radioToCheck) radioToCheck.checked = true;
+        
         window.toggleModal('modalEditProfile', true);
     };
 
-    // ENVIAR FORMULARIO
+    // 7. GUARDAR PERFIL
     const formEditProfile = document.getElementById('formEditProfile');
     if (formEditProfile) {
         formEditProfile.addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('my_username').value;
             const email = document.getElementById('my_email').value;
+            
+            // Obtener avatar seleccionado
+            let selectedAvatar = 'default';
+            const checkedInput = document.querySelector('input[name="avatar"]:checked');
+            if (checkedInput) selectedAvatar = checkedInput.value;
 
             try {
                 const res = await fetch('/api/users/profile/edit', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ username, email })
+                    body: JSON.stringify({ username, email, avatar: selectedAvatar })
                 });
-                
+
                 const data = await res.json();
 
                 if (res.ok) {
                     alert('Perfil actualizado.');
-                    location.reload(); // Recargar para ver cambios
+                    location.reload(); // Recargar para ver cambios y nuevo avatar
                 } else {
                     alert('Error: ' + data.error);
                 }

@@ -121,10 +121,14 @@ textarea:focus {
 }
 
 select option {
-    background-color: var(--bg-card);  /* Fondo oscuro (Gris #1A1A1A) */
-    color: var(--text-main);           /* Texto claro */
-    padding: 10px;                     /* Espaciado (funciona en Firefox, ignorado en Chrome) */
+    background-color: var(--bg-card);
+    /* Fondo oscuro (Gris #1A1A1A) */
+    color: var(--text-main);
+    /* Texto claro */
+    padding: 10px;
+    /* Espaciado (funciona en Firefox, ignorado en Chrome) */
 }
+
 /* =========================================
    4. BOTONES UNIFICADOS (SIMÉTRICOS)
    ========================================= */
@@ -683,4 +687,38 @@ tbody tr:hover {
 
 .back-link:hover {
     color: var(--text-main);
+}
+
+/* Selector de Avatares */
+.avatar-option input {
+    display: none;
+    /* Ocultar el radio button real */
+}
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    background: var(--bg-input);
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* Cuando el input está marcado (checked), cambiar estilo del icon-box */
+.avatar-option input:checked+.icon-box {
+    border-color: var(--accent);
+    background: rgba(79, 209, 197, 0.1);
+    /* Fondo verde suave */
+    color: var(--accent);
+    transform: scale(1.1);
+}
+
+.icon-box:hover {
+    border-color: var(--text-main);
 }
