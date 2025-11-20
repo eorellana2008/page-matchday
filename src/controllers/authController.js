@@ -21,9 +21,9 @@ const registerUser = async (req, res) => {
 
         // 🚨 CORRECCIÓN AQUÍ: Cambiamos role_id de 2 a 4 (User)
         await User.create({
-            username, 
-            email, 
-            password_hash, 
+            username,
+            email,
+            password_hash,
             role_id: 4, // 4 = User en tu nueva jerarquía
             municipality_id
         });
@@ -52,9 +52,9 @@ const loginUser = async (req, res) => {
 
         if (match) {
             const token = jwt.sign(
-                { userId: user.user_id, username: user.username, role: user.role }, 
-                JWT_SECRET, 
-                { expiresIn: '1h' } 
+                { userId: user.user_id, username: user.username, role: user.role },
+                JWT_SECRET,
+                { expiresIn: '1h' }
             );
             res.status(200).json({ message: 'Login exitoso', token, username: user.username, role: user.role });
         } else {
@@ -70,17 +70,12 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     try {
-        // Buscar si existe el usuario por email (usamos query directa o un helper si tienes)
-        // Nota: Como User.findByUsername busca por username, haremos una búsqueda rápida aquí o agregas findByEmail al modelo.
-        // Para simplificar, asumiré que agregas esto o haces un query directo, pero mejor agreguemos findByEmail al modelo si no existe.
-        // Haremos un truco rápido: buscamos en todos o agregamos findByEmail. Usemos una query directa aquí por simplicidad.
-        // *Lo ideal es agregar findByEmail al modelo, pero aquí va directo:*
-        const pool = require('../../db/connection');
-        const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-        const user = rows[0];
+        // 1. USAMOS EL MODELO (Ya no hay query directa aquí)
+        const user = await User.findByEmail(email);
 
         if (!user) {
-            // Por seguridad, no decimos si el correo existe o no, pero devolvemos éxito falso
+            // Por seguridad, es mejor no revelar si el correo existe o no, 
+            // pero mantenemos tu lógica actual para que te sea familiar.
             return res.status(404).json({ error: 'No existe una cuenta con este correo.' });
         }
 
@@ -90,8 +85,10 @@ const forgotPassword = async (req, res) => {
         // Guardar en DB
         await User.saveResetToken(user.user_id, token);
 
-        // Crear enlace
-        const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset.html?token=${token}`;
+        // Crear enlace (Aseguramos que use el puerto correcto si estás en local)
+        // Nota: Si usas otro puerto, ajusta localhost:3000
+        const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const resetUrl = `${baseUrl}/reset.html?token=${token}`;
 
         // Enviar correo
         const message = `

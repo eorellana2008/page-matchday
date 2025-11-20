@@ -38,6 +38,12 @@ const User = {
         return rows[0];
     },
 
+    findByEmail: async (email) => {
+        const query = 'SELECT * FROM users WHERE email = ?';
+        const [rows] = await pool.query(query, [email]);
+        return rows[0];
+    },
+
     // Usado en Registro y Crear Admin
     create: async (userData) => {
         const { username, email, password_hash, role_id, municipality_id } = userData;
