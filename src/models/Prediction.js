@@ -26,6 +26,19 @@ const Prediction = {
     // Actualizar los puntos de una predicción específica
     updatePoints: async (predictionId, points) => {
         return await pool.query('UPDATE predictions SET points = ? WHERE prediction_id = ?', [points, predictionId]);
+    },
+    getHistory: async (userId) => {
+        const query = `
+            SELECT 
+                p.pred_home, p.pred_away, p.points,
+                m.team_home, m.team_away, m.score_home, m.score_away, m.match_date
+            FROM predictions p
+            JOIN matches m ON p.match_id = m.match_id
+            WHERE p.user_id = ? AND m.status = 'finished'
+            ORDER BY m.match_date DESC
+        `;
+        const [rows] = await pool.query(query, [userId]);
+        return rows;
     }
 };
 

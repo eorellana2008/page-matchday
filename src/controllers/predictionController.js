@@ -50,4 +50,15 @@ const getMyPredictions = async (req, res) => {
     }
 };
 
-module.exports = { savePrediction, getMyPredictions };
+const getHistory = async (req, res) => {
+    const userId = req.user.userId;
+    try {
+        const history = await Prediction.getHistory(userId);
+        res.json(history);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener historial' });
+    }
+};
+
+module.exports = { savePrediction, getMyPredictions, getHistory };

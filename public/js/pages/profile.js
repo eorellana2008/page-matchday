@@ -150,4 +150,52 @@ document.addEventListener('DOMContentLoaded', async () => {
             historyList.innerHTML = '<p style="text-align: center; color: var(--danger);">Error al cargar historial.</p>';
         }
     };
+
+    window.abrirHistorialPuntos = async () => {
+        const listContainer = document.getElementById('pointsList');
+        window.toggleModal('modalPointsHistory', true);
+        listContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted);">Cargando...</p>';
+
+        try {
+            const res = await fetch('/api/predictions/history', { headers: { 'Authorization': `Bearer ${token}` } });
+            const history = await res.json();
+
+            if (history.length === 0) {
+                listContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">Aún no tienes partidos finalizados.</p>';
+                return;
+            }
+
+            listContainer.innerHTML = history.map(h => {
+                // Lógica de colores según puntos
+                let badgeColor = '#FF6347'; // Rojo (0 pts)
+                let ptsText = '+0';
+                
+                if (h.points === 3) { badgeColor = '#00FFC0'; ptsText = '+3 🎯'; } // Verde (3 pts)
+                else if (h.points === 1) { badgeColor = '#FFD700'; ptsText = '+1 ✅'; } // Dorado (1 pt)
+
+                const date = new Date(h.match_date).toLocaleDateString();
+
+                return `
+                    <div style="background: var(--bg-input); border: 1px solid var(--border); padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.95em; color: var(--text-main);">
+                                ${h.team_home} <span style="color: var(--text-muted); font-size: 0.8em;">vs</span> ${h.team_away}
+                            </div>
+                            <div style="font-size: 0.8em; color: var(--text-muted); margin-top: 4px;">
+                                Real: <b>${h.score_home}-${h.score_away}</b> | Tú: ${h.pred_home}-${h.pred_away}
+                            </div>
+                            <div style="font-size: 0.75em; color: var(--text-muted); margin-top: 2px;">${date}</div>
+                        </div>
+                        <div style="background: ${badgeColor}; color: #111; font-weight: bold; padding: 5px 10px; border-radius: 12px; font-size: 0.9em; min-width: 50px; text-align: center;">
+                            ${ptsText}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+        } catch (e) {
+            console.error(e);
+            listContainer.innerHTML = '<p style="text-align: center; color: var(--danger);">Error al cargar datos.</p>';
+        }
+    };
 });
