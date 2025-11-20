@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Match = require('../models/Match');
 const bcrypt = require('bcrypt');
 
 // ⚡ MAPA DE PODER
@@ -12,11 +13,40 @@ const ROLE_POWER = {
 // --- FUNCIONES PÚBLICAS ---
 const getProfile = async (req, res) => {
     try {
+        // 1. Obtener datos básicos del usuario
         const user = await User.findById(req.user.userId);
         if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+        
+        // 2. Obtener estadísticas
+        const stats = await User.getStats(req.user.userId);
+        
+        // 3. Obtener próximo partido
+        const nextMatch = await Match.findNext();
+
+        // 4. Calcular porcentaje (Evitar división por cero)
+        let efficiency = 0;
+        if (stats.total_played > 0) {
+            efficiency = Math.round((stats.total_hits / stats.total_played) * 100);
+        }
+
+        // Limpiar hash
         delete user.password_hash;
-        res.json(user);
-    } catch (error) { res.status(500).json({ error: 'Error al cargar perfil' }); }
+
+        // 5. Enviar todo junto
+        res.json({
+            ...user,
+            stats: {
+                efficiency: efficiency,
+                played: stats.total_played,
+                hits: stats.total_hits
+            },
+            nextMatch: nextMatch || null
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al cargar perfil' });
+    }
 };
 
 const changePassword = async (req, res) => {

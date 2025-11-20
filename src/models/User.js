@@ -109,6 +109,19 @@ const User = {
         `;
         const [rows] = await pool.query(query);
         return rows;
+    },
+
+    getStats: async (userId) => {
+        // Contar predicciones totales y cuántas han sumado puntos (> 0)
+        const query = `
+            SELECT 
+                COUNT(*) as total_played,
+                SUM(CASE WHEN points > 0 THEN 1 ELSE 0 END) as total_hits
+            FROM predictions 
+            WHERE user_id = ?
+        `;
+        const [rows] = await pool.query(query, [userId]);
+        return rows[0];
     }
 };
 

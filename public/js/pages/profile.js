@@ -36,6 +36,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             const btnAdmin = document.getElementById('btnAdminPanel');
             btnAdmin.classList.remove('hidden');
         }
+
+        if (user.stats) {
+            document.getElementById('profileEfficiency').textContent = `${user.stats.efficiency}%`;
+            // Opcional: cambiar color si es alto/bajo
+            if(user.stats.efficiency >= 50) document.getElementById('profileEfficiency').style.color = 'var(--success)';
+        }
+
+        // 2. Mostrar Próximo Partido
+        const nextMatchEl = document.getElementById('nextMatchInfo');
+        const nextTimeEl = document.getElementById('nextMatchTime');
+        
+        if (user.nextMatch) {
+            const date = new Date(user.nextMatch.match_date);
+            const timeStr = date.toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' });
+            
+            nextMatchEl.innerHTML = `${user.nextMatch.team_home} <span style="color:var(--text-muted)">vs</span> ${user.nextMatch.team_away}`;
+            nextTimeEl.textContent = timeStr;
+            
+            // Hacemos click en la card para ir a votar directamente
+            document.getElementById('nextMatchCard').style.cursor = 'pointer';
+            document.getElementById('nextMatchCard').onclick = () => window.location.href = '/results.html';
+        } else {
+            nextMatchEl.textContent = "No hay partidos pendientes.";
+            nextTimeEl.textContent = "";
+        }
     } catch (error) {
         console.error(error);
         sessionStorage.clear();

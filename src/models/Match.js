@@ -38,7 +38,19 @@ const Match = {
 
     delete: async (id) => {
         return await pool.query('DELETE FROM matches WHERE match_id = ?', [id]);
-    }
+    },
+
+    findNext: async () => {
+        const query = `
+            SELECT * FROM matches 
+            WHERE match_date >= NOW() 
+            AND (status != 'finished' OR status IS NULL)
+            ORDER BY match_date ASC 
+            LIMIT 1
+        `;
+        const [rows] = await pool.query(query);
+        return rows[0];
+    },
 };
 
 module.exports = Match;
