@@ -11,7 +11,7 @@ const generateCode = () => {
 };
 
 const leagueController = {
-    // 1. CREAR LIGA
+    // CREAR LIGA
     createLeague: async (req, res) => {
         const userId = req.user.userId;
         const { name } = req.body;
@@ -19,11 +19,8 @@ const leagueController = {
         if (!name) return res.status(400).json({ error: 'La liga necesita un nombre.' });
 
         try {
-            // Generar código único (intentamos hasta que no exista, simple por ahora)
             let code = generateCode();
-            // Nota: En un sistema masivo, aquí verificaríamos si el código ya existe en DB.
-            
-            // Crear la liga
+
             const leagueId = await League.create(name, code, userId);
 
             // Unir al creador automáticamente como miembro
@@ -37,7 +34,7 @@ const leagueController = {
         }
     },
 
-    // 2. UNIRSE A LIGA
+    // UNIRSE A LIGA
     joinLeague: async (req, res) => {
         const userId = req.user.userId;
         const { code } = req.body;
@@ -49,13 +46,11 @@ const leagueController = {
             const league = await League.findByCode(code.toUpperCase());
             if (!league) return res.status(404).json({ error: 'Código inválido. No existe esa liga.' });
 
-            // Verificar si ya soy miembro
             const isMember = await League.isMember(league.league_id, userId);
             if (isMember) return res.status(409).json({ error: 'Ya perteneces a esta liga.' });
 
-            // Unirse
             await League.addMember(league.league_id, userId);
-            
+
             res.json({ message: `¡Te has unido a "${league.name}"!` });
 
         } catch (error) {
@@ -64,7 +59,7 @@ const leagueController = {
         }
     },
 
-    // 3. VER MIS LIGAS
+    // VER MIS LIGAS
     getMyLeagues: async (req, res) => {
         const userId = req.user.userId;
         try {
@@ -75,27 +70,67 @@ const leagueController = {
         }
     },
 
-    // 4. VER DETALLES Y RANKING DE UNA LIGA
+    // VER DETALLES Y RANKING DE UNA LIGA
     getLeagueDetails: async (req, res) => {
         const userId = req.user.userId;
         const { id } = req.params;
 
         try {
-            // Verificar si el usuario es miembro para dejarle ver
             const isMember = await League.isMember(id, userId);
             if (!isMember) return res.status(403).json({ error: 'No perteneces a esta liga.' });
 
-            // Obtener ranking
             const ranking = await League.getLeagueRanking(id);
-            
-            // Opcional: Podrías obtener también info básica de la liga (nombre, código) aquí
-            // Por ahora devolvemos solo el ranking
+
             res.json(ranking);
 
         } catch (error) {
             res.status(500).json({ error: 'Error al cargar la liga.' });
         }
+    },
+
+    // SALIR DE LIGA
+    leaveLeague: async (req, res) => {
+        const userId = req.user.userId;
+        const { id } = req.params;
+
+        try {
+            // Verificar si es el dueño (El dueño NO puede salirse, debe borrarla)
+            const league = await League.getAdmin(id);
+            if (!league) return res.status(404).json({ error: 'Liga no encontrada.' });
+
+            if (league.admin_id === userId) {
+                return res.status(400).json({ error: 'Eres el administrador. No puedes salirte, debes eliminar la liga.' });
+            }
+
+            await League.leave(id, userId);
+            res.json({ message: 'Te has salido de la liga.' });
+
+        } catch (error) {
+            res.status(500).json({ error: 'Error al salir de la liga.' });
+        }
+    },
+
+    // ELIMINAR LIGA (Solo Admin)
+    deleteLeague: async (req, res) => {
+        const userId = req.user.userId;
+        const { id } = req.params;
+
+        try {
+            const league = await League.getAdmin(id);
+            if (!league) return res.status(404).json({ error: 'Liga no encontrada.' });
+
+            if (league.admin_id !== userId) {
+                return res.status(403).json({ error: 'No tienes permiso para eliminar esta liga.' });
+            }
+
+            await League.delete(id);
+            res.json({ message: 'Liga eliminada correctamente.' });
+
+        } catch (error) {
+            res.status(500).json({ error: 'Error al eliminar la liga.' });
+        }
     }
 };
+
 
 module.exports = leagueController;

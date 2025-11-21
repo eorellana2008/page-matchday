@@ -179,5 +179,13 @@ const api = {
     getLeagueDetails: async (id) => {
         const res = await fetchWithAuth(`/leagues/${id}`);
         return res ? res.json() : [];
+    },
+    leaveLeague: async (id) => {
+        const res = await fetchWithAuth(`/leagues/${id}/leave`, { method: 'DELETE' });
+        return res ? res.json() : { error: 'Error' };
+    },
+    deleteLeague: async (id) => {
+        const res = await fetchWithAuth(`/leagues/${id}`, { method: 'DELETE' });
+        return res ? res.json() : { error: 'Error' };
     }
 };

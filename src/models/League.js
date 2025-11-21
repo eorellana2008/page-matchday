@@ -49,12 +49,31 @@ const League = {
         const [rows] = await pool.query(query, [leagueId]);
         return rows;
     },
-    
+
     // Verificar si ya soy miembro (Para no unirse doble)
     isMember: async (leagueId, userId) => {
         const query = 'SELECT id FROM league_members WHERE league_id = ? AND user_id = ?';
         const [rows] = await pool.query(query, [leagueId, userId]);
         return rows.length > 0;
+    },
+
+    // Salir de una liga
+    leave: async (leagueId, userId) => {
+        const query = 'DELETE FROM league_members WHERE league_id = ? AND user_id = ?';
+        return await pool.query(query, [leagueId, userId]);
+    },
+
+    // Eliminar una liga completa (Solo el admin)
+    delete: async (leagueId) => {
+        const query = 'DELETE FROM leagues WHERE league_id = ?';
+        return await pool.query(query, [leagueId]);
+    },
+
+    // Obtener el dueño de la liga
+    getAdmin: async (leagueId) => {
+        const query = 'SELECT admin_id FROM leagues WHERE league_id = ?';
+        const [rows] = await pool.query(query, [leagueId]);
+        return rows[0];
     }
 };
 
