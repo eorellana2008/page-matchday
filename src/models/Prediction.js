@@ -17,13 +17,11 @@ const Prediction = {
         return rows;
     },
 
-    // Obtener todas las predicciones de un partido específico (para calcular puntos)
     getByMatch: async (matchId) => {
         const [rows] = await pool.query('SELECT * FROM predictions WHERE match_id = ?', [matchId]);
         return rows;
     },
 
-    // Actualizar los puntos de una predicción específica
     updatePoints: async (predictionId, points) => {
         return await pool.query('UPDATE predictions SET points = ? WHERE prediction_id = ?', [points, predictionId]);
     },

@@ -1,8 +1,8 @@
 const User = require('../models/User');
-const Match = require('../models/Match'); // Necesario para 'nextMatch'
+const Match = require('../models/Match');
 const bcrypt = require('bcrypt');
 
-// 1. VER PERFIL (Incluye stats y próximo partido)
+// VER PERFIL
 const getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.userId);
@@ -33,7 +33,7 @@ const getProfile = async (req, res) => {
     }
 };
 
-// 2. EDITAR MI PERFIL (Usuario se edita a sí mismo)
+// EDITAR MI PERFIL (Usuario se edita a sí mismo)
 const updateMyProfile = async (req, res) => {
     const userId = req.user.userId;
     const { username, email, avatar, municipality_id } = req.body;
@@ -58,7 +58,7 @@ const updateMyProfile = async (req, res) => {
     }
 };
 
-// 3. CAMBIAR CONTRASEÑA PROPIA
+// CAMBIAR CONTRASEÑA PROPIA
 const changePassword = async (req, res) => {
     const userId = req.user.userId;
     const { currentPassword, newPassword } = req.body;
@@ -76,7 +76,7 @@ const changePassword = async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Error al actualizar.' }); }
 };
 
-// 4. RANKING (Público para usuarios logueados)
+// RANKING
 const getLeaderboard = async (req, res) => {
     try { 
         const rows = await User.getLeaderboard(); 

@@ -28,7 +28,6 @@ async function fetchWithAuth(endpoint, options = {}) {
 
 const api = {
     // --- AUTH ---
-    // --- AUTH ---
     login: async (creds) => {
         const res = await fetch(`${API_BASE}/auth/login`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(creds)
@@ -110,7 +109,7 @@ const api = {
     // --- ADMIN PANEL (Solo Staff) ---
     // ==========================================
 
-    // 1. Gestión de Usuarios
+    // -- GESTION DE USUARIOS --
     getUsers: async () => {
         const res = await fetchWithAuth('/users');
         return res ? res.json() : [];
@@ -134,7 +133,7 @@ const api = {
         return res ? res.json() : {};
     },
 
-    // 2. Gestión de Partidos
+    // -- GESTION DE PARTIDOS --
     createMatch: async (data) => {
         const res = await fetchWithAuth('/matches', { method: 'POST', body: JSON.stringify(data) });
         return res ? res.json() : {};
@@ -152,7 +151,7 @@ const api = {
         return res ? res.json() : {};
     },
 
-    // 3. Gestión de Soporte
+    // -- GESTION DE SOPORTE- --
     getAllRequests: async () => {
         const res = await fetchWithAuth('/requests');
         return res ? res.json() : [];

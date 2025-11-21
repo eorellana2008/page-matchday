@@ -10,17 +10,14 @@ const savePrediction = async (req, res) => {
     }
 
     try {
-        // Validar que el partido existe
         const match = await Match.findById(match_id);
 
         if (!match) return res.status(404).json({ error: 'Partido no existe' });
 
-        // 1. VALIDACIÓN EXISTENTE: Si el admin ya lo cerró
         if (match.status === 'finished') {
             return res.status(400).json({ error: 'El partido ya terminó, no puedes ingresar el posible marcador.' });
         }
 
-        // 2. NUEVA VALIDACIÓN: Por fecha y hora
         const now = new Date();
         const matchDate = new Date(match.match_date);
 

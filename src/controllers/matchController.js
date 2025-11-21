@@ -1,7 +1,7 @@
-const Match = require('../models/Match');         // Importar Modelo Match
-const Prediction = require('../models/Prediction'); // Importar Modelo Prediction
+const Match = require('../models/Match');
+const Prediction = require('../models/Prediction');
 
-// 1. OBTENER TODOS
+// OBTENER TODOS
 const getMatches = async (req, res) => {
     try {
         const matches = await Match.getAll();
@@ -12,7 +12,7 @@ const getMatches = async (req, res) => {
     }
 };
 
-// 2. CREAR (Admin)
+// CREAR (Admin)
 const createMatch = async (req, res) => {
     const { team_home, team_away, match_date } = req.body;
     if (!team_home || !team_away || !match_date) return res.status(400).json({ error: 'Faltan datos' });
@@ -25,7 +25,7 @@ const createMatch = async (req, res) => {
     }
 };
 
-// 3. EDITAR DATOS (Admin)
+// EDITAR DATOS (Admin)
 const updateMatchDetails = async (req, res) => {
     const { id } = req.params;
     const { team_home, team_away, match_date } = req.body;
@@ -37,7 +37,7 @@ const updateMatchDetails = async (req, res) => {
     }
 };
 
-// 4. ELIMINAR (Admin)
+// ELIMINAR (Admin)
 const deleteMatch = async (req, res) => {
     const { id } = req.params;
     try {
@@ -48,32 +48,32 @@ const deleteMatch = async (req, res) => {
     }
 };
 
-// 5. ACTUALIZAR RESULTADO Y CALCULAR PUNTOS (Lógica Compleja)
+// ACTUALIZAR RESULTADO Y CALCULAR PUNTOS
 const updateMatchScore = async (req, res) => {
     const { id } = req.params;
     const score_home = parseInt(req.body.score_home);
     const score_away = parseInt(req.body.score_away);
 
     try {
-        // A) Actualizar el partido en DB
+        // Actualizar el partido en DB
         await Match.updateScore(id, score_home, score_away);
 
-        // B) Obtener predicciones para este partido
+        // Obtener predicciones para este partido
         const preds = await Prediction.getByMatch(id);
 
-        // C) Calcular puntos (Lógica de Negocio en JS)
+        // Calcular puntos
         const updates = preds.map(async (p) => {
             let puntos = 0;
             const predHome = parseInt(p.pred_home);
             const predAway = parseInt(p.pred_away);
 
-            // 1. Marcador Exacto (3 pts)
+            // Marcador Exacto (3 pts)
             if (predHome === score_home && predAway === score_away) {
                 puntos = 3;
             } 
-            // 2. Acertar Ganador o Empate (1 pt)
+            // Acertar Ganador o Empate (1 pt)
             else {
-                const realWinner = Math.sign(score_home - score_away); // 1 (Local), -1 (Visita), 0 (Empate)
+                const realWinner = Math.sign(score_home - score_away);
                 const predWinner = Math.sign(predHome - predAway);
 
                 if (realWinner === predWinner) {
@@ -81,11 +81,11 @@ const updateMatchScore = async (req, res) => {
                 }
             }
 
-            // D) Guardar puntos usando el Modelo
+            // Guardar puntos usando el Modelo
             await Prediction.updatePoints(p.prediction_id, puntos);
         });
 
-        await Promise.all(updates); // Esperar a que todos se calculen
+        await Promise.all(updates);
         
         res.json({ message: 'Marcador actualizado y puntos repartidos.' });
 

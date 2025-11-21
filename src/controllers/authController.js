@@ -6,9 +6,7 @@ const crypto = require('crypto');
 
 const sendEmail = require('../utils/emails');
 
-// Asegúrate de que coincida con tu .env
-const JWT_SECRET = process.env.JWT_SECRET || 'una_clave_de_respaldo';
-
+const JWT_SECRET = process.env.JWT_SECRET;
 const registerUser = async (req, res) => {
     const { username, password, email, municipality_id } = req.body;
 
@@ -19,12 +17,11 @@ const registerUser = async (req, res) => {
     try {
         const password_hash = await bcrypt.hash(password, 10);
 
-        // 🚨 CORRECCIÓN AQUÍ: Cambiamos role_id de 2 a 4 (User)
         await User.create({
             username,
             email,
             password_hash,
-            role_id: 4, // 4 = User en tu nueva jerarquía
+            role_id: 4,
             municipality_id
         });
 
@@ -70,27 +67,20 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     try {
-        // 1. USAMOS EL MODELO (Ya no hay query directa aquí)
+        // USAMOS EL MODELO
         const user = await User.findByEmail(email);
 
         if (!user) {
-            // Por seguridad, es mejor no revelar si el correo existe o no, 
-            // pero mantenemos tu lógica actual para que te sea familiar.
             return res.status(404).json({ error: 'No existe una cuenta con este correo.' });
         }
 
-        // Generar token simple
         const token = crypto.randomBytes(20).toString('hex');
 
-        // Guardar en DB
         await User.saveResetToken(user.user_id, token);
 
-        // Crear enlace (Aseguramos que use el puerto correcto si estás en local)
-        // Nota: Si usas otro puerto, ajusta localhost:3000
-        const baseUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        const baseUrl = process.env.FRONTEND_URL;
         const resetUrl = `${baseUrl}/reset.html?token=${token}`;
 
-        // Enviar correo
         const message = `
             <h1>Recuperación de Contraseña</h1>
             <p>Has solicitado restablecer tu contraseña.</p>
@@ -109,7 +99,7 @@ const forgotPassword = async (req, res) => {
     }
 };
 
-// 2. RESTABLECER CONTRASEÑA (Usa el token para cambiar la pass)
+// RESTABLECER CONTRASEÑA
 const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
 
@@ -119,10 +109,8 @@ const resetPassword = async (req, res) => {
         if (!user) {
             return res.status(400).json({ error: 'Token inválido o expirado.' });
         }
-
         // Hashear nueva contraseña
         const hash = await bcrypt.hash(newPassword, 10);
-
         // Actualizar usuario
         await User.updatePassword(user.user_id, hash);
         await User.clearResetToken(user.user_id);

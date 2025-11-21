@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // api.js maneja el token, pero verificamos existencia para evitar errores visuales
     if (!sessionStorage.getItem('userToken')) return;
 
     const container = document.getElementById('matchesContainer');
@@ -129,7 +128,6 @@ window.guardarPrediccion = async (matchId) => {
     if (pred_home === '' || pred_away === '') return alert('Ingresa ambos marcadores.');
 
     try {
-        // Usamos api.js
         const data = await api.savePrediction({
             match_id: matchId,
             pred_home: parseInt(pred_home),
@@ -142,7 +140,7 @@ window.guardarPrediccion = async (matchId) => {
     } catch (e) { alert('Error de conexión'); }
 };
 
-// FUNCIÓN PARA RANKING MEJORADO
+// FUNCIÓN PARA RANKING
 window.abrirRanking = async () => {
     const modal = document.getElementById('modalRanking');
     const tbody = document.getElementById('rankingBody');
@@ -151,7 +149,6 @@ window.abrirRanking = async () => {
     tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px; color:var(--text-muted);">Cargando cracks...</td></tr>';
 
     try {
-        // Usamos api.js
         const data = await api.getLeaderboard();
 
         tbody.innerHTML = '';

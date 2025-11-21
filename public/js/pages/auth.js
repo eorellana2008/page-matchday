@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
 
-    // Toggles de contraseña (Ojos)
+    // Toggles de contraseña
     const setupToggle = (inputId, toggleId) => {
         const input = document.getElementById(inputId);
         const toggle = document.getElementById(toggleId);
@@ -58,13 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 try {
-                    const data = await api.login(credentials); // <--- API CLEAN
+                    const data = await api.login(credentials);
 
                     if (data.token) {
                         sessionStorage.setItem('userToken', data.token);
                         sessionStorage.setItem('userRole', data.role);
 
-                        // Feedback visual opcional
+                        // Feedback visual
                         if (msgDisplay) {
                             msgDisplay.textContent = `Bienvenido, ${data.username}...`;
                             msgDisplay.className = 'message-display success';
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
 
                 try {
-                    const data = await api.register(userData); // <--- API CLEAN
+                    const data = await api.register(userData);
 
                     if (data.message && !data.error) {
                         alert('¡Registro exitoso! Inicia sesión.');
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.textContent = 'Enviando...';
 
             try {
-                const data = await api.forgotPassword({ email }); // <--- API CLEAN
+                const data = await api.forgotPassword({ email });
 
                 msg.textContent = data.message || data.error;
                 msg.className = data.message ? 'message-display success' : 'message-display error';
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const newPassword = document.getElementById('new_password').value;
 
             try {
-                const data = await api.resetPassword({ token, newPassword }); // <--- API CLEAN
+                const data = await api.resetPassword({ token, newPassword });
 
                 if (msg) {
                     msg.textContent = data.message || data.error;
@@ -183,7 +183,7 @@ async function cargarMunicipiosAuth() {
     const select = document.getElementById('municipality');
     if (!select) return;
     try {
-        const munis = await api.getMunicipalities(); // <--- API CLEAN
+        const munis = await api.getMunicipalities();
         if (munis && munis.length > 0) {
             select.innerHTML = '<option value="">Seleccione...</option>' +
                 munis.map(m => `<option value="${m.municipality_id}">${m.municipality_name} (${m.department_name})</option>`).join('');

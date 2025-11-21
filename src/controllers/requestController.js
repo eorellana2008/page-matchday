@@ -1,6 +1,6 @@
 const Request = require('../models/Request');
 
-// 1. CREAR TICKET (Usuario)
+// CREAR TICKET (Usuario)
 const createRequest = async (req, res) => {
     const userId = req.user.userId;
     const { type, message } = req.body;
@@ -16,7 +16,7 @@ const createRequest = async (req, res) => {
     }
 };
 
-// 2. LEER TICKETS (Admin)
+// LEER TICKETS (Admin)
 const getRequests = async (req, res) => {
     try {
         const requests = await Request.getPending();
@@ -27,7 +27,7 @@ const getRequests = async (req, res) => {
     }
 };
 
-// 3. RESPONDER Y RESOLVER TICKET (Admin) - Reemplaza resolveRequest
+// RESPONDER Y RESOLVER TICKET (Admin)
 const respondAndResolve = async (req, res) => {
     const { id } = req.params;
     const { responseMessage } = req.body;
@@ -43,7 +43,7 @@ const respondAndResolve = async (req, res) => {
     }
 };
 
-// 4. OBTENER TICKETS RESUELTOS DEL USUARIO
+// OBTENER TICKETS RESUELTOS DEL USUARIO
 const getMyResolvedRequests = async (req, res) => {
     const userId = req.user.userId;
 

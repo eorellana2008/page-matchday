@@ -1,17 +1,14 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // El token lo maneja api.js
     const matchesBody = document.querySelector('#matchesTable tbody');
     if (!matchesBody) return;
 
-    // 1. CARGAR PARTIDOS
+    // CARGAR PARTIDOS
     try {
-        const matches = await api.getMatches(); // <--- API CLEAN
+        const matches = await api.getMatches();
 
         matchesBody.innerHTML = matches.map(match => {
             const dateObj = new Date(match.match_date);
             const dateStr = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            // Ajuste de zona horaria manual para el input date (simple) o usar ISO directo
-            // Truco para datetime-local: new Date(dateObj.getTime() - (dateObj.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
             const isoDate = new Date(dateObj.getTime() - (dateObj.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
 
             const estadoHtml = match.status === 'finished'
@@ -51,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }).join('');
     } catch (e) { console.error(e); }
 
-    // 2. LISTENER: CREAR PARTIDO
+    // LISTENER: CREAR PARTIDO
     const formMatch = document.getElementById('formMatch');
     if (formMatch) {
         formMatch.addEventListener('submit', async (e) => {
@@ -74,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // 3. LISTENER: EDITAR DATOS
+    // LISTENER: EDITAR DATOS
     const formEditMatch = document.getElementById('formEditMatch');
     if (formEditMatch) {
         formEditMatch.addEventListener('submit', async (e) => {
@@ -98,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // 4. LISTENER: PONER GOLES
+    // LISTENER: PONER GOLES
     const formScore = document.getElementById('formScore');
     if (formScore) {
         formScore.addEventListener('submit', async (e) => {
@@ -144,7 +141,7 @@ window.abrirModalScore = (id, home, away) => {
 window.eliminarPartido = async (id) => {
     if (!confirm('¿Borrar partido?')) return;
     try {
-        const res = await api.deleteMatch(id); // <--- API CLEAN
+        const res = await api.deleteMatch(id);
         if (res.message) {
             alert('Partido eliminado');
             location.reload();

@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 
-// ⚡ MAPA DE PODER
+// MAPA DE PODER
 const ROLE_POWER = {
     'superadmin': 100,
     'admin': 50,
@@ -9,7 +9,7 @@ const ROLE_POWER = {
     'user': 1
 };
 
-// 1. LISTAR TODOS (Solo Staff)
+// LISTAR TODOS (Solo Staff)
 const getAllUsers = async (req, res) => {
     try { 
         const users = await User.getAllDetailed(); 
@@ -17,7 +17,7 @@ const getAllUsers = async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Error al listar.' }); }
 };
 
-// 2. CREAR USUARIO (Admin crea a otros)
+// CREAR USUARIO (Admin crea a otros)
 const createUser = async (req, res) => {
     if (req.user.role === 'moderator') {
         return res.status(403).json({ error: 'Acceso denegado. Solo Admins pueden crear usuarios.' });
@@ -45,7 +45,7 @@ const createUser = async (req, res) => {
     }
 };
 
-// 3. EDITAR OTRO USUARIO
+// EDITAR OTRO USUARIO
 const updateUser = async (req, res) => {
     if (req.user.role === 'moderator') {
         return res.status(403).json({ error: 'Acceso denegado.' });
@@ -66,13 +66,12 @@ const updateUser = async (req, res) => {
         }
 
         let role_id = (role === 'superadmin') ? 1 : (role === 'admin' ? 2 : (role === 'moderator' ? 3 : 4));
-        // Nota: Aquí usamos el método genérico 'update' que tenías en v1, no el 'updateBasicInfo' nuevo
         await User.update(id, { username, email, role_id });
         res.json({ message: 'Actualizado correctamente' });
     } catch (error) { res.status(500).json({ error: 'Error al actualizar' }); }
 };
 
-// 4. ELIMINAR USUARIO
+// ELIMINAR USUARIO
 const deleteUser = async (req, res) => {
     if (req.user.role === 'moderator') {
         return res.status(403).json({ error: 'Acceso denegado.' });
@@ -95,7 +94,7 @@ const deleteUser = async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Error al eliminar.' }); }
 };
 
-// 5. RESET PASSWORD DE OTRO (Admin)
+// RESET PASSWORD DE OTRO (Admin)
 const adminResetPassword = async (req, res) => {
     if (req.user.role === 'moderator') {
         return res.status(403).json({ error: 'Acceso denegado.' });

@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // (api.js maneja el token)
 
     const setupToggle = (inputId, toggleId) => {
         const input = document.getElementById(inputId);
@@ -17,10 +16,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const tableBody = document.querySelector('#usersTable tbody');
 
-    // 1. CARGAR USUARIOS
+    // CARGAR USUARIOS
     if (tableBody) {
         try {
-            const users = await api.getUsers(); // <--- API CLEAN
+            const users = await api.getUsers();
 
             if (users.error) {
                 console.error("Error permisos:", users.error);
@@ -29,7 +28,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             tableBody.innerHTML = users.map(user => {
                 const inicial = user.username.charAt(0).toUpperCase();
-                // Solo escapamos visualmente si existe la función, si no usamos raw
                 const safeUser = window.escapeHTML ? window.escapeHTML(user.username) : user.username;
                 const safeEmail = window.escapeHTML ? window.escapeHTML(user.email) : user.email;
 
@@ -75,12 +73,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (e) { console.error("Error cargando usuarios:", e); }
     }
 
-    // 2. CARGAR MUNICIPIOS (Para crear usuario)
+    // CARGAR MUNICIPIOS (Para crear usuario)
     async function cargarMunicipiosAdmin() {
         const select = document.getElementById('new_municipality');
         if (!select) return;
         try {
-            const munis = await api.getMunicipalities(); // <--- API CLEAN
+            const munis = await api.getMunicipalities();
             if (munis && munis.length > 0) {
                 select.innerHTML = '<option value="">Seleccione una ubicación...</option>' +
                     munis.map(m => `<option value="${m.municipality_id}">${m.municipality_name} (${m.department_name})</option>`).join('');
@@ -89,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     await cargarMunicipiosAdmin();
 
-    // 3. CREAR USUARIO
+    // CREAR USUARIO
     const formCrear = document.getElementById('formCrear');
     if (formCrear) {
         formCrear.addEventListener('submit', async (e) => {
@@ -102,7 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 municipality_id: document.getElementById('new_municipality').value
             };
             try {
-                const res = await api.createUser(newUser); // <--- API CLEAN
+                const res = await api.createUser(newUser);
                 if (res.message) {
                     alert('Usuario creado correctamente');
                     location.reload();
@@ -113,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // 4. EDITAR USUARIO
+    // EDITAR USUARIO
     const formEditar = document.getElementById('formEditar');
     if (formEditar) {
         formEditar.addEventListener('submit', async (e) => {
@@ -125,14 +123,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 role: document.getElementById('edit_role').value
             };
             try {
-                const res = await api.updateUser(id, data); // <--- API CLEAN
+                const res = await api.updateUser(id, data);
                 if (res.message) { alert('Usuario actualizado'); location.reload(); }
                 else { alert('Error: ' + (res.error || 'No se pudo actualizar')); }
             } catch (e) { alert('Error de conexión'); }
         });
     }
 
-    // 5. RESET PASSWORD (ADMIN)
+    // RESET PASSWORD (ADMIN)
     const formReset = document.getElementById('formReset');
     if (formReset) {
         formReset.addEventListener('submit', async (e) => {
@@ -140,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const id = document.getElementById('reset_id').value;
             const newPassword = document.getElementById('reset_new_password').value;
             try {
-                const res = await api.adminResetPassword(id, newPassword); // <--- API CLEAN
+                const res = await api.adminResetPassword(id, newPassword); 
                 if (res.message) {
                     alert('Contraseña restablecida correctamente.');
                     window.toggleModal('modalReset', false);
@@ -187,7 +185,7 @@ window.abrirModalEditUser = (id, user, email, role) => {
 
     const select = document.getElementById('edit_role');
     select.value = role;
-    if (select.value === "") { // Si no tiene permiso para ese rol
+    if (select.value === "") {
         const opt = document.createElement('option');
         opt.text = role.toUpperCase() + " (Sin permiso)";
         opt.value = role;
@@ -208,7 +206,7 @@ window.abrirModalCrear = () => {
 window.eliminarUsuario = async (id) => {
     if (!confirm('¿Borrar usuario?')) return;
     try {
-        const res = await api.deleteUser(id); // <--- API CLEAN
+        const res = await api.deleteUser(id);
         if (res.message) { alert('Usuario eliminado'); location.reload(); }
         else { alert('Error: ' + (res.error || 'No se pudo eliminar')); }
     } catch (e) { alert('Error de conexión'); }

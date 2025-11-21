@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { verifyToken, verifyStaff } = require('../middleware/authMiddleware');
 
-// Importamos los DOS controladores nuevos
 const profileController = require('../controllers/profileController');
 const adminController = require('../controllers/adminController');
 
@@ -10,7 +9,7 @@ const adminController = require('../controllers/adminController');
 // 1. RUTAS DE PERFIL (Usuario Logueado)
 // ==========================================
 router.get('/profile', verifyToken, profileController.getProfile);
-router.put('/profile/edit', verifyToken, profileController.updateMyProfile); // Mantenemos la ruta /edit
+router.put('/profile/edit', verifyToken, profileController.updateMyProfile);
 router.put('/profile/password', verifyToken, profileController.changePassword);
 router.get('/leaderboard', verifyToken, profileController.getLeaderboard);
 

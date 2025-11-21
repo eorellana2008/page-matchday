@@ -1,4 +1,3 @@
-// Variable global para almacenar las solicitudes temporalmente (para el modal de respuesta)
 window.currentRequestsData = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -6,10 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!reqBody) return;
 
     try {
-        // 1. OBTENER DATOS CON API
-        const requests = await api.getAllRequests(); // <--- API CLEAN
-
-        // Guardar en memoria
+        const requests = await api.getAllRequests();
         window.currentRequestsData = requests;
 
         if (!requests || requests.length === 0) {
@@ -22,7 +18,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const safeMsg = window.escapeHTML ? window.escapeHTML(r.message) : r.message;
             const safeUser = window.escapeHTML ? window.escapeHTML(r.username) : r.username;
 
-            // --- ESTILOS E ICONOS (V2.0) ---
             let typeStyle = '';
             let iconHtml = '';
 
@@ -70,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }).join('');
     } catch (e) { console.error(e); }
 
-    // 2. ENVIAR RESPUESTA
+    // ENVIAR RESPUESTA
     const formResponse = document.getElementById('formResponse');
     if (formResponse) {
         formResponse.addEventListener('submit', async (e) => {
@@ -81,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!responseMessage) return alert('Escribe una respuesta.');
 
             try {
-                const res = await api.respondRequest(id, responseMessage); // <--- API CLEAN
+                const res = await api.respondRequest(id, responseMessage);
 
                 if (res.message) {
                     alert('Respuesta enviada.');
@@ -94,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// 3. HELPER SEGURO
+// HELPER SEGURO
 window.prepararRespuesta = (id) => {
     const request = window.currentRequestsData.find(r => r.request_id === id);
     if (request) {

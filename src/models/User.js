@@ -9,7 +9,6 @@ const User = {
         return await pool.query(query, [token, expires, userId]);
     },
 
-    //  NUEVO: Buscar usuario por token válido
     findByResetToken: async (token) => {
         const query = `
             SELECT * FROM users 
@@ -20,7 +19,7 @@ const User = {
         return rows[0];
     },
 
-    //  NUEVO: Limpiar token después de usarlo
+    //  Limpiar token después de usarlo
     clearResetToken: async (userId) => {
         const query = 'UPDATE users SET reset_token = NULL, reset_token_expires = NULL WHERE user_id = ?';
         return await pool.query(query, [userId]);
@@ -54,7 +53,7 @@ const User = {
         return await pool.query(query, [username, email, password_hash, role_id, municipality_id]);
     },
 
-    // Usado en Admin Panel (Lista completa)
+    // Usado en Admin Panel
     getAllDetailed: async () => {
         const query = `
             SELECT u.user_id, u.username, u.email, m.name as municipality, 
@@ -117,7 +116,6 @@ const User = {
     },
 
     getStats: async (userId) => {
-        // Contar predicciones totales y cuántas han sumado puntos (> 0)
         const query = `
             SELECT 
                 COUNT(*) as total_played,

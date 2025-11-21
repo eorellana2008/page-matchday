@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Nota: El token ya lo maneja api.js internamente, no hace falta pedirlo aquí.
-
-    // 1. CAMBIAR CONTRASEÑA
+    // CAMBIAR CONTRASEÑA
     const formChangePass = document.getElementById('formChangePass');
     if (formChangePass) {
         formChangePass.addEventListener('submit', async (e) => {
@@ -10,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const newPassword = document.getElementById('new_pass').value;
 
             try {
-                // Usamos la API centralizada
                 const data = await api.changePassword({ currentPassword, newPassword });
 
                 if (data.message) {
@@ -24,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. SOPORTE
+    // SOPORTE
     const formSupport = document.getElementById('formSupport');
     if (formSupport) {
         formSupport.addEventListener('submit', async (e) => {
@@ -46,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. EDITAR PERFIL (Guardar)
+    // EDITAR PERFIL
     const formEditProfile = document.getElementById('formEditProfile');
     if (formEditProfile) {
         formEditProfile.addEventListener('submit', async (e) => {
@@ -75,14 +72,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- FUNCIONES GLOBALES (Modales) ---
 
-// A. Historial de Tickets
+// HISTORIAL DE TIKETS
 window.abrirModalHistorial = async () => {
     const historyList = document.getElementById('historyList');
     window.toggleModal('modalHistory', true);
     historyList.innerHTML = '<p style="text-align: center; color: #888;">Cargando historial...</p>';
     
     try {
-        // Usamos api.js
         const history = await api.getMyResolvedRequests();
 
         if (!history || history.length === 0) {
@@ -106,14 +102,13 @@ window.abrirModalHistorial = async () => {
     } catch (e) { historyList.innerHTML = '<p style="color:var(--danger)">Error al cargar.</p>'; }
 };
 
-// B. Historial de Puntos
+// HISTORIAL DE PUNTOS
 window.abrirHistorialPuntos = async () => {
     const listContainer = document.getElementById('pointsList');
     window.toggleModal('modalPointsHistory', true);
     listContainer.innerHTML = '<p style="text-align: center;">Cargando...</p>';
     
     try {
-        // Usamos api.js
         const history = await api.getPointsHistory();
 
         if (!history || history.length === 0) {
@@ -142,7 +137,7 @@ window.abrirHistorialPuntos = async () => {
     } catch (e) { console.error(e); }
 };
 
-// C. Abrir Modal Editar (Usa window.currentUserData del otro archivo)
+// ABRIR MODAL EDITAR
 window.abrirModalEditarPerfil = async () => {
     document.getElementById('my_username').value = document.getElementById('profileName').textContent;
     document.getElementById('my_email').value = document.getElementById('profileEmail').textContent;
@@ -157,7 +152,6 @@ window.abrirModalEditarPerfil = async () => {
         } catch (e) {}
     }
 
-    // Usar datos globales para preseleccionar
     const userData = window.currentUserData || {};
     if (userData.municipality_id) muniSelect.value = userData.municipality_id;
     
