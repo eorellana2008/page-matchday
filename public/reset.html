@@ -4,29 +4,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Contraseña</title>
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <title>ELEVN - Nueva Contraseña</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="icon" href="img/logo/logo-solitario.png">
-
+    <link rel="icon" href="img/logo/logo-solitario.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 
-<body>
-    <div class="container" style="max-width: 400px;">
-        <h1 style="font-size: 1.5em;">Nueva Contraseña</h1>
+<body class="fade-in auth-body">
 
-        <form id="resetForm">
-            <label>Nueva Contraseña:</label>
-            <div class="password-container">
-                <input type="password" id="new_password" required>
-                <span class="toggle-password" id="toggleResetPass">
-                    <i class="ri-eye-line"></i>
-                </span>
+    <div id="loginLoader" class="loading-overlay">
+        <div class="spinner-wrapper">
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring-2"></div>
+            <img src="img/logo/logo-solitario.png" alt="Logo" class="spinner-logo">
+        </div>
+    </div>
+
+    <div class="auth-container-v8">
+
+        <div class="auth-hero-section">
+            <div class="hero-overlay"></div>
+            <div class="hero-content-auth">
+                <img src="img/logo/logo-letras2.png" alt="ELEVN Logo" class="hero-logo animate-up">
+                <h1 class="animate-up delay-1">Seguridad ante todo.</h1>
+                <p class="animate-up delay-2">Crea una nueva contraseña segura para proteger tus predicciones y puntos.
+                </p>
             </div>
-            <button type="submit">Cambiar Contraseña</button>
-        </form>
+        </div>
 
-        <p id="message" class="message-display hidden"></p>
+        <div class="auth-form-section">
+            <div class="form-wrapper animate-up">
+
+                <div class="mobile-brand-header">
+                    <img src="img/logo/logo-letras2.png" alt="Logo">
+                </div>
+
+                <div class="form-header">
+                    <h2><i class="ri-shield-keyhole-line" style="color:var(--accent);"></i> Nueva Contraseña</h2>
+                    <p class="text-muted">Elige una clave que no hayas usado antes.</p>
+                </div>
+
+                <form id="resetForm">
+                    <label for="new_password">Nueva Contraseña</label>
+                    <div class="input-group">
+                        <i class="ri-lock-password-line input-icon"></i>
+                        <div class="password-container">
+                            <input type="password" id="new_password" required placeholder="Mínimo 6 caracteres">
+                            <span class="toggle-password" id="toggleResetPass">
+                                <i class="ri-eye-line"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-auth-primary">
+                        Actualizar Contraseña
+                    </button>
+                </form>
+
+                <p id="message" class="message-display hidden"></p>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="js/controllers/auth.controller.js"></script>

@@ -4,26 +4,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recuperar Contraseña</title>
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <title>ELEVN - Recuperar</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="icon" href="img/logo/logo-solitario.png">
-
+    <link rel="icon" href="img/logo/logo-solitario.png" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 
-<body>
-    <div class="container" style="max-width: 400px;">
-        <h1 style="font-size: 1.5em;">Recuperar Cuenta</h1>
-        <p class="subtitle">Ingresa tu correo para recibir un enlace.</p>
+<body class="fade-in auth-body">
 
-        <form id="forgotForm">
-            <label>Correo Electrónico:</label>
-            <input type="email" id="forgot_email" required>
-            <button type="submit" id="btnSend">Enviar Enlace</button>
-        </form>
+    <div id="loginLoader" class="loading-overlay">
+        <div class="spinner-wrapper">
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring-2"></div>
+            <img src="img/logo/logo-solitario.png" alt="Logo" class="spinner-logo">
+        </div>
+    </div>
 
-        <p class="switch-link"><a href="/index.html">Volver al Login</a></p>
-        <p id="message" class="message-display hidden"></p>
+    <div class="auth-container-v8">
+
+        <div class="auth-hero-section">
+            <div class="hero-overlay"></div>
+            <div class="hero-content-auth">
+                <img src="img/logo/logo-letras2.png" alt="ELEVN Logo" class="hero-logo animate-up">
+                <h1 class="animate-up delay-1">Recupera tu acceso.</h1>
+                <p class="animate-up delay-2">No pierdas tu racha. Restablece tu contraseña y vuelve al juego en
+                    segundos.</p>
+            </div>
+        </div>
+
+        <div class="auth-form-section">
+            <div class="form-wrapper animate-up">
+
+                <div class="mobile-brand-header">
+                    <img src="img/logo/logo-letras2.png" alt="Logo">
+                </div>
+
+                <div class="form-header">
+                    <h2><i class="ri-lock-unlock-line" style="color:var(--accent);"></i> ¿Olvidaste tu clave?</h2>
+                    <p class="text-muted">Ingresa tu correo para recibir un enlace de recuperación.</p>
+                </div>
+
+                <form id="forgotForm">
+                    <label for="forgot_email">Correo Electrónico</label>
+                    <div class="input-group">
+                        <i class="ri-mail-send-line input-icon"></i>
+                        <input type="email" id="forgot_email" required placeholder="ejemplo@correo.com">
+                    </div>
+
+                    <button type="submit" id="btnSend" class="btn-auth-primary">
+                        Enviar Enlace
+                    </button>
+                </form>
+
+                <div class="switch-auth">
+                    <a href="/index.html" style="display:inline-flex; align-items:center; gap:5px;">
+                        <i class="ri-arrow-left-line"></i> Volver al Login
+                    </a>
+                </div>
+
+                <p id="message" class="message-display hidden"></p>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="js/controllers/auth.controller.js"></script>
