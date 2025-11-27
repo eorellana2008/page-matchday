@@ -6,97 +6,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ELEVN - Historia</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="img/logo/logo-solitario.png" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="icon" href="img/logo/logo-solitario.png">
 </head>
 
-<body>
-    <div class="container" style="max-width: 800px;">
+<body class="fade-in">
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-            <a href="/profile.html" class="back-link"><i class="ri-arrow-left-line"></i> Volver</a>
+    <div class="profile-container-v8">
+
+        <aside class="profile-sidebar-left desktop-only">
+            <div class="nav-brand">
+                <img src="img/logo/logo-letras.png" alt="ELEVN" style="width: 120px; margin-bottom: 20px;">
+            </div>
+            <nav class="nav-menu-vertical">
+                <a href="/results.html" class="nav-item"><i class="ri-football-line"></i> Quiniela</a>
+                <a href="/leagues.html" class="nav-item"><i class="ri-trophy-line"></i> Mis Ligas</a>
+                <a href="/history.html" class="nav-item active"><i class="ri-book-mark-line"></i> Historia Mundial</a>
+                <a href="/profile.html" class="nav-item"><i class="ri-user-3-line"></i> Mi Perfil</a>
+                <div id="btnAdminPanelNav" class="nav-item hidden admin-link"
+                    onclick="window.location.href='/admin-panel.html'">
+                    <i class="ri-admin-line"></i> Admin Panel
+                </div>
+            </nav>
+        </aside>
+
+        <main class="profile-main-content">
+            <div class="quiniela-hero animate-up"
+                style="background: linear-gradient(135deg, #2c3e50 0%, #000000 100%);">
+                <div class="quiniela-content">
+                    <div>
+                        <h1>Salón de la Fama</h1>
+                        <p>Toca una tarjeta para ver la crónica.</p>
+                    </div>
+                    <div class="hero-icon">
+                        <i class="ri-book-open-line" style="color: rgba(255,255,255,0.05);"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div id="historyContainer" class="matches-grid">
+                <p class="text-center text-muted">Cargando historia...</p>
+            </div>
+        </main>
+
+        <aside class="profile-sidebar-right desktop-only animate-up delay-1">
+            <div class="widget-card glass-effect">
+                <h3><i class="ri-lightbulb-line accent-icon"></i> ¿Sabías qué?</h3>
+                <p style="font-size:0.9em; color:var(--text-muted); line-height:1.6; margin-top:10px;">
+                    Brasil es la única selección que ha participado en todas las ediciones de la Copa Mundial de Fútbol
+                    hasta la fecha.
+                </p>
+            </div>
+
+            <div class="widget-card">
+                <h3><i class="ri-medal-line"></i> Títulos</h3>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:10px;">
+                    <div class="mini-rank-item"><span class="mini-rank-name">🇧🇷 Brasil</span><span
+                            class="mini-rank-pts">5</span></div>
+                    <div class="mini-rank-item"><span class="mini-rank-name">🇩🇪 Alemania</span><span
+                            class="mini-rank-pts">4</span></div>
+                    <div class="mini-rank-item"><span class="mini-rank-name">🇮🇹 Italia</span><span
+                            class="mini-rank-pts">4</span></div>
+                    <div class="mini-rank-item"><span class="mini-rank-name">🇦🇷 Argentina</span><span
+                            class="mini-rank-pts">3</span></div>
+                </div>
+            </div>
+
+            <div class="widget-card settings-widget" style="margin-top: 20px;">
+                <button id="logoutButtonWidget" class="settings-link logout">
+                    <i class="ri-logout-box-line"></i> Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <div class="bottom-nav-bar mobile-only">
+        <a href="/results.html" class="nav-icon-btn"><i class="ri-football-line"></i><span>Quiniela</span></a>
+        <a href="/leagues.html" class="nav-icon-btn"><i class="ri-trophy-line"></i><span>Ligas</span></a>
+        <a href="/profile.html" class="nav-icon-btn"><i class="ri-user-3-line"></i><span>Perfil</span></a>
+        <button onclick="window.toggleModal('modalSettingsMobile', true)" class="nav-icon-btn"><i
+                class="ri-menu-line"></i><span>Menú</span></button>
+    </div>
+
+    <div id="modalSettingsMobile" class="modal-overlay hidden mobile-only">
+        <div class="modal-content"
+            style="position: absolute; bottom: 0; width: 100%; border-radius: 20px 20px 0 0; max-width: none; padding-bottom: 40px;">
+            <h2>Menú</h2>
+            <div class="menu-grid" style="grid-template-columns: 1fr; gap: 10px;">
+                <div class="menu-card" onclick="window.location.href='/history.html'">
+                    <div><i class="ri-book-mark-fill" style="color:var(--accent)"></i></div><strong>Historia</strong>
+                </div>
+                <div id="btnAdminPanelMobile" class="menu-card hidden admin-link"
+                    onclick="window.location.href='/admin-panel.html'">
+                    <div><i class="ri-admin-line"></i></div><strong>Admin Panel</strong>
+                </div>
+            </div>
+            <div class="mt-20">
+                <button id="logoutButtonMobile" class="logout-btn" style="width: 100%;"><i
+                        class="ri-logout-box-line"></i> Cerrar Sesión</button>
+            </div>
+            <button class="btn-cancel mt-20" onclick="window.toggleModal('modalSettingsMobile', false)"
+                style="width: 100%;">Cerrar Menú</button>
         </div>
+    </div>
 
-        <div style="text-align: center; margin-bottom: 40px;">
-            <h1 style="margin-bottom: 5px; color: #FFD700;">Palmarés Mundial</h1>
-            <p class="subtitle">Historia de los campeones.</p>
-        </div>
+    <div id="modalHistoryDetails" class="modal-overlay hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <div id="historyDetailHeader" style="text-align: center; margin-bottom: 20px;"></div>
 
-        <div class="matches-grid">
-            <div class="match-card" style="border-color: #5DADEC;">
-                <div class="match-header">
-                    <span><i class="ri-map-pin-line"></i> Qatar</span>
-                    <span
-                        style="background: #5DADEC; color:white; padding:2px 8px; border-radius:4px; font-size:0.8em; font-weight:bold;">2022</span>
-                </div>
-                <div class="match-body" style="text-align: center;">
-                    <div style="font-size: 4em; margin-bottom: 10px;">🇦🇷</div>
-                    <h2 style="color: var(--text-main); margin-bottom: 5px;">Argentina</h2>
-                    <p style="color: var(--text-muted); font-size: 0.9em;">Campeón del Mundo</p>
-                    <div
-                        style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85em;">
-                        Final: <b>3 - 3</b> (4-2 pen) vs Francia
-                    </div>
-                </div>
+            <div id="historyDetailBody" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
             </div>
 
-            <div class="match-card" style="border-color: #EF4135;">
-                <div class="match-header">
-                    <span><i class="ri-map-pin-line"></i> Rusia</span>
-                    <span
-                        style="background: #EF4135; color:white; padding:2px 8px; border-radius:4px; font-size:0.8em; font-weight:bold;">2018</span>
-                </div>
-                <div class="match-body" style="text-align: center;">
-                    <div style="font-size: 4em; margin-bottom: 10px;">🇫🇷</div>
-                    <h2 style="color: var(--text-main); margin-bottom: 5px;">Francia</h2>
-                    <p style="color: var(--text-muted); font-size: 0.9em;">Campeón del Mundo</p>
-                    <div
-                        style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85em;">
-                        Final: <b>4 - 2</b> vs Croacia
-                    </div>
-                </div>
-            </div>
-
-            <div class="match-card" style="border-color: #FFD700;">
-                <div class="match-header">
-                    <span><i class="ri-map-pin-line"></i> Brasil</span>
-                    <span
-                        style="background: #FFD700; color:black; padding:2px 8px; border-radius:4px; font-size:0.8em; font-weight:bold;">2014</span>
-                </div>
-                <div class="match-body" style="text-align: center;">
-                    <div style="font-size: 4em; margin-bottom: 10px;">🇩🇪</div>
-                    <h2 style="color: var(--text-main); margin-bottom: 5px;">Alemania</h2>
-                    <p style="color: var(--text-muted); font-size: 0.9em;">Campeón del Mundo</p>
-                    <div
-                        style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85em;">
-                        Final: <b>1 - 0</b> vs Argentina
-                    </div>
-                </div>
-            </div>
-
-            <div class="match-card" style="border-color: #C60B1E;">
-                <div class="match-header">
-                    <span><i class="ri-map-pin-line"></i> Sudáfrica</span>
-                    <span
-                        style="background: #C60B1E; color:white; padding:2px 8px; border-radius:4px; font-size:0.8em; font-weight:bold;">2010</span>
-                </div>
-                <div class="match-body" style="text-align: center;">
-                    <div style="font-size: 4em; margin-bottom: 10px;">🇪🇸</div>
-                    <h2 style="color: var(--text-main); margin-bottom: 5px;">España</h2>
-                    <p style="color: var(--text-muted); font-size: 0.9em;">Campeón del Mundo</p>
-                    <div
-                        style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85em;">
-                        Final: <b>1 - 0</b> vs Holanda
-                    </div>
-                </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="window.toggleModal('modalHistoryDetails', false)"
+                    style="width: 100%;">Cerrar</button>
             </div>
         </div>
     </div>
 
-    <script type="module">
-        import { initSession } from './js/utils/session.js';
-        document.addEventListener('DOMContentLoaded', initSession);
-    </script>
+    <script type="module" src="js/controllers/history.controller.js"></script>
 </body>
 
 </html>

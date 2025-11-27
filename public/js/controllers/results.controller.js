@@ -1,18 +1,19 @@
-/* CONTROLADOR: RESULTADOS (V8 FINAL - CORREGIDO) */
+/* CONTROLADOR: RESULTADOS (V8 FINAL - CON MODAL TORNEOS) */
 import { api } from '../services/api.js';
 import { MatchCard } from '../components/MatchCard.js';
 import { toggleModal, navigateTo } from '../utils/dom.js';
-import { initSession } from '../utils/session.js'; // <--- ESTO FALTABA
+import { initSession } from '../utils/session.js';
 
 let state = { context: 'global', id: null, leagues: [], competitions: [] };
 const TRANSITION_DELAY = 1000;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. INICIALIZAR SESIÓN (Esto activa los botones de logout)
     initSession();
-
-    // Verificación de seguridad extra (por si acaso)
     if (!sessionStorage.getItem('userToken')) return window.location.href = '/index.html';
+
+    const logout = () => { if (confirm('¿Cerrar sesión?')) { sessionStorage.clear(); navigateTo('/index.html'); } };
+    document.getElementById('logoutButtonWidget')?.addEventListener('click', logout);
+    document.getElementById('logoutButtonMobile')?.addEventListener('click', logout);
 
     const role = sessionStorage.getItem('userRole');
     if (['admin', 'superadmin', 'moderator'].includes(role)) {
@@ -37,25 +38,64 @@ function renderTabs() {
     const container = document.getElementById('tabsContainer');
     if (!container) return;
 
-    let html = `<button class="filter-chip ${state.context === 'global' ? 'active' : ''}" onclick="window.controllers.results.switchContext('global', null)"><i class="ri-earth-line"></i> Global</button>`;
+    let html = `
+        <button class="filter-chip ${state.context === 'global' ? 'active' : ''}" 
+            onclick="window.controllers.results.switchContext('global', null)">
+            <i class="ri-earth-line"></i> Global
+        </button>
+    `;
 
     const publicComps = state.competitions.filter(c => c.competition_id !== 1);
+
     if (publicComps.length > 0) {
-        html += `<div class="tab-separator-label">Torneos</div>`;
-        publicComps.forEach(c => {
-            html += `<button class="filter-chip ${state.context === 'competition' && state.id === c.competition_id ? 'active' : ''}" onclick="window.controllers.results.switchContext('competition', ${c.competition_id})"><i class="ri-cup-line"></i> ${c.name}</button>`;
-        });
+        // Detectar nombre activo
+        const isCompActive = state.context === 'competition';
+        const currentName = isCompActive
+            ? publicComps.find(c => c.competition_id === state.id)?.name
+            : 'Torneos';
+
+        // Botón que abre el MODAL
+        html += `
+            <button class="filter-chip ${isCompActive ? 'active' : ''}" onclick="window.controllers.results.openTournaments()">
+                <i class="ri-cup-line"></i> ${currentName} <i class="ri-arrow-down-s-line" style="margin-left:5px; opacity:0.7;"></i>
+            </button>
+        `;
     }
+
     if (state.leagues.length > 0) {
         html += `<div class="tab-separator-label">Privadas</div>`;
         state.leagues.forEach(l => {
-            html += `<button class="filter-chip ${state.context === 'league' && state.id === l.league_id ? 'active' : ''}" onclick="window.controllers.results.switchContext('league', ${l.league_id})"><i class="ri-lock-2-line"></i> ${l.name}</button>`;
+            const isActive = state.context === 'league' && state.id === l.league_id;
+            html += `<button class="filter-chip ${isActive ? 'active' : ''}" onclick="window.controllers.results.switchContext('league', ${l.league_id})"><i class="ri-lock-2-line"></i> ${l.name}</button>`;
         });
     }
+
     container.innerHTML = html;
 }
 
 const controller = {
+    // ABRIR MODAL DE TORNEOS
+    openTournaments: () => {
+        const list = document.getElementById('tournamentsList');
+        const publicComps = state.competitions.filter(c => c.competition_id !== 1);
+
+        list.innerHTML = publicComps.map(c => `
+            <div class="tournament-option" onclick="window.controllers.results.selectTournament(${c.competition_id})">
+                <i class="ri-trophy-line" style="color:var(--accent);"></i>
+                <span>${c.name}</span>
+                ${state.context === 'competition' && state.id === c.competition_id ? '<i class="ri-check-line" style="color:var(--success); margin-left:auto;"></i>' : ''}
+            </div>
+        `).join('');
+
+        toggleModal('modalTournaments', true);
+    },
+
+    // SELECCIONAR UN TORNEO DEL MODAL
+    selectTournament: (id) => {
+        toggleModal('modalTournaments', false); // Cerrar modal
+        controller.switchContext('competition', id); // Cambiar contexto
+    },
+
     switchContext: (type, id) => {
         state.context = type;
         state.id = id;
@@ -63,7 +103,6 @@ const controller = {
 
         const container = document.getElementById('matchesContainer');
         const rankingContainer = document.getElementById('miniLeaderboard');
-
         container.classList.add('fade-content', 'fading-out');
         if (rankingContainer) rankingContainer.classList.add('fade-content', 'fading-out');
 
@@ -74,6 +113,7 @@ const controller = {
         }, TRANSITION_DELAY);
     },
 
+    // ... (savePrediction y openRanking IGUAL QUE ANTES) ...
     savePrediction: async (matchId) => {
         const ph = document.getElementById(`ph_${matchId}`).value;
         const pa = document.getElementById(`pa_${matchId}`).value;
@@ -96,10 +136,10 @@ const controller = {
     openRanking: () => { toggleModal('modalRanking', true); cargarRanking(); }
 };
 
+// ... (cargarQuiniela, loadMiniLeaderboard, cargarRanking IGUAL QUE ANTES) ...
 async function cargarQuiniela() {
     const container = document.getElementById('matchesContainer');
     const rankingTitle = document.getElementById('miniRankTitle');
-
     try {
         let matches = [], predictions = [];
         if (state.context === 'league') {
@@ -130,7 +170,6 @@ async function loadMiniLeaderboard() {
         let data = [];
         if (state.context === 'league') data = await api.getLeagueDetails(state.id);
         else data = await api.getLeaderboard(state.id);
-
         if (data.length === 0) container.innerHTML = '<p class="text-muted text-center text-sm">Sin datos.</p>';
         else {
             const top5 = data.slice(0, 5);
@@ -158,7 +197,6 @@ async function cargarRanking() {
             titleEl.innerHTML = `<i class="ri-earth-line"></i> Ranking Global`;
             data = await api.getLeaderboard(state.id);
         }
-
         if (data.length === 0) tbody.innerHTML = '<tr><td colspan="3" class="text-center">Vacío</td></tr>';
         else {
             tbody.innerHTML = data.map((u, i) => {

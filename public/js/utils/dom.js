@@ -8,8 +8,15 @@
 export const toggleModal = (modalId, show = true) => {
     const modal = document.getElementById(modalId);
     if (modal) {
-        if (show) modal.classList.remove('hidden');
-        else modal.classList.add('hidden');
+        if (show) {
+            modal.classList.remove('hidden');
+            // BLOQUEAR SCROLL DEL FONDO
+            document.body.style.overflow = 'hidden';
+        } else {
+            modal.classList.add('hidden');
+            // RESTAURAR SCROLL
+            document.body.style.overflow = '';
+        }
     }
 };
 

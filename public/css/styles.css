@@ -8,10 +8,12 @@
     --border: #333333;
     --text-main: #EAEAEA;
     --text-muted: #888888;
+
     --accent: #4FD1C5;
     --danger: #FC8181;
     --success: #68D391;
     --warning: #FFD700;
+
     --radius: 10px;
 }
 
@@ -32,6 +34,13 @@ body {
     min-height: 100vh;
     padding: 20px;
     line-height: 1.6;
+    /* CORRECCIÓN: Animación quitada del body para no romper modales fixed */
+}
+
+/* Animación aplicada solo a los contenedores de contenido */
+.container,
+.profile-container-v8,
+.auth-container-v8 {
     animation: fadeInPage 0.6s ease-out forwards;
 }
 
@@ -99,6 +108,18 @@ body:has(.admin-table-container) {
 
     50% {
         transform: scale(1.05);
+        opacity: 1;
+    }
+}
+
+@keyframes modalPop {
+    from {
+        transform: scale(0.95) translateY(10px);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1) translateY(0);
         opacity: 1;
     }
 }
@@ -225,6 +246,7 @@ a:hover {
     text-decoration: underline;
 }
 
+/* Formularios */
 form label {
     display: block;
     margin-bottom: 6px;
@@ -238,6 +260,11 @@ form label {
 .input-group {
     position: relative;
     margin-bottom: 20px;
+}
+
+.password-container {
+    position: relative;
+    width: 100%;
 }
 
 .input-icon {
@@ -255,12 +282,14 @@ form label {
     pointer-events: none;
 }
 
+/* REGLA MAESTRA PARA TODOS LOS INPUTS CON ICONO */
 .input-group input,
 .input-group select,
 .password-container input {
     width: 100%;
     height: 50px;
     padding: 0 15px 0 50px !important;
+    /* 50px a la izquierda para el icono */
     background: var(--bg-input);
     border: 1px solid var(--border);
     border-radius: 8px;
@@ -269,6 +298,11 @@ form label {
     transition: all 0.2s;
     display: flex;
     align-items: center;
+}
+
+/* Corrección margen input dentro de grupo */
+.input-group .password-container input {
+    margin-bottom: 0;
 }
 
 .input-group input:focus,
@@ -283,11 +317,6 @@ form label {
     color: var(--accent);
 }
 
-.password-container {
-    position: relative;
-    width: 100%;
-}
-
 .toggle-password {
     position: absolute;
     right: 0;
@@ -299,13 +328,14 @@ form label {
     justify-content: center;
     cursor: pointer;
     color: var(--text-muted);
-    z-index: 10;
+    z-index: 15;
 }
 
 .toggle-password:hover {
     color: var(--text-main);
 }
 
+/* Botones */
 button,
 .nav-btn,
 .logout-btn,
@@ -395,6 +425,7 @@ button[type="submit"]:hover,
     color: var(--text-main);
 }
 
+/* Loader Premium */
 .loading-overlay {
     position: fixed;
     top: 0;
@@ -462,7 +493,7 @@ button[type="submit"]:hover,
 }
 
 /* ==========================================================================
-   4. COMPONENTES (TARJETAS)
+   4. COMPONENTES (TARJETAS & FILTROS)
    ========================================================================== */
 .league-card {
     background: var(--bg-input);
@@ -546,6 +577,60 @@ button[type="submit"]:hover,
     color: var(--accent);
 }
 
+.filters-container {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    white-space: nowrap;
+    scrollbar-width: thin;
+    align-items: center;
+}
+
+.filter-chip {
+    background: var(--bg-input);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    cursor: pointer;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+}
+
+.filter-chip:hover {
+    border-color: var(--text-main);
+    color: var(--text-main);
+}
+
+.filter-chip.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(79, 209, 197, 0.3);
+}
+
+.tab-separator-label {
+    font-size: 0.7em;
+    font-weight: 800;
+    color: var(--text-muted);
+    margin: 0 5px;
+    padding-left: 10px;
+    border-left: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    height: 30px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.6;
+}
+
 /* ==========================================================================
    5. QUINIELA & PARTIDOS (COMPACTO)
    ========================================================================== */
@@ -553,6 +638,7 @@ button[type="submit"]:hover,
     display: grid;
     gap: 15px;
     grid-template-columns: 1fr;
+    width: 100%;
 }
 
 .match-card {
@@ -673,60 +759,6 @@ button[type="submit"]:hover,
     align-items: center;
     gap: 10px;
     margin-top: 20px;
-}
-
-.filters-container {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    white-space: nowrap;
-    scrollbar-width: thin;
-    align-items: center;
-}
-
-.filter-chip {
-    background: var(--bg-input);
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.85em;
-    cursor: pointer;
-    height: 36px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: 0.2s;
-}
-
-.filter-chip:hover {
-    border-color: var(--text-main);
-    color: var(--text-main);
-}
-
-.filter-chip.active {
-    background: var(--accent);
-    color: #000;
-    border-color: var(--accent);
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(79, 209, 197, 0.3);
-}
-
-.tab-separator-label {
-    font-size: 0.7em;
-    font-weight: 800;
-    color: var(--text-muted);
-    margin: 0 5px;
-    padding-left: 10px;
-    border-left: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    height: 30px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    opacity: 0.6;
 }
 
 /* ==========================================================================
@@ -874,22 +906,22 @@ tbody tr:hover {
     background: rgba(255, 255, 255, 0.02);
 }
 
-/* MODALES */
+/* MODALES (CORRECCIÓN DE CENTRADO Y INPUTS) */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 10000;
     opacity: 0;
     visibility: hidden;
-    transition: 0.2s;
+    transition: all 0.3s ease;
 }
 
 .modal-overlay:not(.hidden) {
@@ -900,12 +932,14 @@ tbody tr:hover {
 .modal-content {
     background: var(--bg-card);
     padding: 30px;
-    border-radius: var(--radius);
+    border-radius: 16px;
     width: 90%;
-    max-width: 450px;
+    max-width: 500px;
     border: 1px solid var(--border);
-    max-height: 90vh;
+    max-height: 85vh;
     overflow-y: auto;
+    position: relative;
+    animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .modal-buttons {
@@ -918,6 +952,7 @@ tbody tr:hover {
     width: 100%;
 }
 
+/* INPUTS DENTRO DE MODALES (Fondo Oscuro) */
 .modal-content input,
 .modal-content select,
 .modal-content textarea {
@@ -1454,37 +1489,15 @@ tbody tr:hover {
 }
 
 /* ==========================================================================
-   10. RESPONSIVE (OPTIMIZADO PARA MÓVIL)
+   10. RESPONSIVE (MÓVIL OPTIMIZADO)
    ========================================================================== */
 @media (max-width: 1024px) {
-
-    /* 1. Ajuste del Body para Móvil */
-    body {
-        padding: 10px;
-        /* Reducimos el padding exterior drásticamente */
-        align-items: flex-start;
-        /* Alineamos todo arriba, no al centro */
-        height: auto;
-        /* Permitir scroll natural */
-        justify-content: center;
-        /* Asegurar centrado si es necesario */
-    }
-
-    /* 2. Contenedor Principal */
     .profile-container-v8 {
         grid-template-columns: 1fr;
-        /* Una sola columna */
-        gap: 20px;
-        width: 100%;
-        max-width: 100%;
-        /* Ocupar todo el ancho disponible */
-        margin: 0;
-        margin-bottom: 80px;
-        /* Espacio vital para que la barra de abajo no tape contenido */
-        padding-bottom: 20px;
+        gap: 25px;
+        margin-bottom: 60px;
     }
 
-    /* Ocultar elementos de PC */
     .desktop-only {
         display: none !important;
     }
@@ -1493,33 +1506,26 @@ tbody tr:hover {
         display: flex !important;
     }
 
-    /* 3. Hero (Portada) Adaptado */
     .hero-banner {
-        height: 100px;
+        height: 120px;
     }
 
     .hero-content {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        margin-top: -40px;
+        margin-top: -50px;
         padding: 0 20px 20px 20px;
     }
 
     .hero-avatar-container {
         margin-right: 0;
-        margin-bottom: 10px;
-    }
-
-    .profile-avatar-hero {
-        width: 100px;
-        height: 100px;
-        font-size: 3em;
+        margin-bottom: 15px;
     }
 
     .hero-identity h1 {
         text-align: center;
-        font-size: 1.6em;
+        font-size: 1.8em;
     }
 
     .hero-location {
@@ -1528,11 +1534,10 @@ tbody tr:hover {
 
     .hero-stats-block {
         width: 100%;
-        max-width: 100%;
+        max-width: 280px;
         margin-top: 15px;
     }
 
-    /* 4. Login Móvil */
     .auth-container-v8 {
         flex-direction: column;
         height: auto;
@@ -1548,26 +1553,13 @@ tbody tr:hover {
     }
 
     .auth-form-section {
-        padding: 0;
-        background: transparent;
-        align-items: flex-start;
-        padding-top: 20px;
-    }
-
-    .form-wrapper {
-        background: var(--bg-card);
-        padding: 30px;
-        border-radius: 20px;
-        border: 1px solid var(--border);
-        width: 100%;
-        max-width: 100%;
+        padding: 30px 20px;
     }
 
     .mobile-brand-header {
         display: block !important;
     }
 
-    /* 5. Quiniela Header Móvil */
     .quiniela-hero {
         text-align: center;
         padding: 20px;
@@ -1580,45 +1572,79 @@ tbody tr:hover {
 
     .quiniela-content h1 {
         text-align: center;
-        font-size: 1.8em;
+        font-size: 1.6em;
     }
 
     .hero-icon {
         display: none;
     }
 
-    /* Ocultar icono grande para ahorrar espacio */
-
-    /* 6. Barra de Navegación (Asegurar que flote bien) */
-    .bottom-nav-bar {
-        padding-bottom: max(10px, env(safe-area-inset-bottom));
-        background: rgba(26, 26, 26, 0.98);
+    /* Tarjetas Cuadradas en Móvil */
+    .matches-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        width: 100%;
     }
 
-    /* 7. Ajuste específico para Tarjetas de Partido en Móvil (Más compactas) */
     .match-card {
         font-size: 0.85em;
-        /* Reducir fuente base */
-        margin-bottom: 0;
-        /* Grid se encarga del espacio */
+        width: 100%;
     }
 
     .match-body {
         padding: 12px;
-        /* Reducir padding interno */
     }
 
     .team-avatar {
         width: 35px;
         height: 35px;
-        /* Escudos un poco más pequeños */
         font-size: 1em;
     }
 
     .score-input-modern {
-        width: 40px;
-        height: 40px;
+        width: 35px;
+        height: 35px;
         font-size: 1.2em;
+    }
+
+    .team-item {
+        width: 100%;
+    }
+
+    .teams-display {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .vs-divider {
+        display: none;
+    }
+
+    .score-inputs-row {
+        margin-top: 5px;
+    }
+
+    .bottom-nav-bar {
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        background: rgba(26, 26, 26, 0.98);
+    }
+
+    /* Dropdown móvil */
+    .filters-container {
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-bottom: 50px;
+    }
+
+    .dropdown-menu {
+        position: fixed;
+        top: auto;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-height: 40vh;
     }
 }
 
@@ -1654,7 +1680,7 @@ tbody tr:hover {
 }
 
 /* ==========================================================================
-   11. WIDGETS QUINIELA V8
+   11. WIDGETS QUINIELA & DROPDOWN FLOTANTE
    ========================================================================== */
 .quiniela-hero {
     background: linear-gradient(135deg, #1a1a1a 0%, #162421 100%);
@@ -1736,4 +1762,48 @@ tbody tr:hover {
 .mini-rank-pts {
     color: var(--accent);
     font-weight: 700;
+}
+
+/* MENU FLOTANTE */
+.dropdown-menu {
+    position: fixed;
+    background-color: #222;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    padding: 5px;
+    max-height: 300px;
+    overflow-y: auto;
+    min-width: 200px;
+    animation: fadeInPage 0.2s ease-out;
+}
+
+.dropdown-item {
+    padding: 12px 15px;
+    font-size: 0.9em;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dropdown-item:hover {
+    background-color: var(--bg-input);
+    color: var(--text-main);
+}
+
+.dropdown-item.selected {
+    background-color: rgba(79, 209, 197, 0.1);
+    color: var(--accent);
+    font-weight: bold;
+    border-left: 3px solid var(--accent);
+}
+
+.filter-chip.active i.ri-arrow-down-s-line {
+    transform: rotate(180deg);
+    transition: transform 0.2s;
 }
