@@ -6,65 +6,124 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ELEVN - Ligas</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="img/logo/logo-solitario.png" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="icon" href="img/logo/logo-solitario.png">
-
 </head>
 
-<body>
-    <div class="container" style="max-width: 600px;">
+<body class="fade-in">
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-            <a href="/profile.html" class="back-link"><i class="ri-arrow-left-line"></i> Volver</a>
-            <div style="display:flex; gap:10px;">
-                <button onclick="window.controllers.leagues.openJoin()" class="nav-btn"
-                    style="background: var(--bg-input); border: 1px solid var(--accent); color: var(--accent); width:auto; padding: 0 15px;">
-                    <i class="ri-login-box-line"></i> Unirme
+    <div class="profile-container-v8">
+
+        <aside class="profile-sidebar-left desktop-only">
+            <div class="nav-brand">
+                <img src="img/logo/logo-letras.png" alt="ELEVN" style="width: 120px; margin-bottom: 20px;">
+            </div>
+            <nav class="nav-menu-vertical">
+                <a href="/results.html" class="nav-item"><i class="ri-football-line"></i> Quiniela</a>
+                <a href="/leagues.html" class="nav-item active"><i class="ri-trophy-line"></i> Mis Ligas</a>
+                <a href="/history.html" class="nav-item"><i class="ri-book-mark-line"></i> Historia Mundial</a>
+                <a href="/profile.html" class="nav-item"><i class="ri-user-3-line"></i> Mi Perfil</a>
+                <div id="btnAdminPanelNav" class="nav-item hidden admin-link"
+                    onclick="window.location.href='/admin-panel.html'">
+                    <i class="ri-admin-line"></i> Admin Panel
+                </div>
+            </nav>
+        </aside>
+
+        <main class="profile-main-content">
+
+            <div class="quiniela-hero animate-up"
+                style="background: linear-gradient(135deg, #1a1a1a 0%, #2c1e30 100%);">
+                <div class="quiniela-content">
+                    <div>
+                        <h1>Mis Torneos</h1>
+                        <p>Crea tu propia liga y desafía a tus amigos.</p>
+                    </div>
+                    <div class="hero-icon">
+                        <i class="ri-shield-star-fill" style="color: rgba(255,255,255,0.05);"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mobile-only animate-up delay-1" style="display:flex; gap:10px; margin-bottom:20px;">
+                <button onclick="window.controllers.leagues.openCreate()" class="btn-save" style="flex:1;"><i
+                        class="ri-add-circle-line"></i> Crear</button>
+                <button onclick="window.controllers.leagues.openJoin()" class="btn-cancel"
+                    style="flex:1; border:1px solid var(--accent); color:var(--accent);"><i
+                        class="ri-login-box-line"></i> Unirme</button>
+            </div>
+
+            <div id="leaguesContainer" class="animate-up delay-2">
+                <div class="text-center text-muted" style="padding:40px;">
+                    <i class="ri-loader-4-line ri-spin" style="font-size:2em;"></i>
+                </div>
+            </div>
+
+        </main>
+
+        <aside class="profile-sidebar-right desktop-only animate-up delay-1">
+
+            <div class="widget-card glass-effect">
+                <h3><i class="ri-group-2-fill accent-icon"></i> Gestión</h3>
+                <p style="font-size:0.9em; color:var(--text-muted); margin-bottom:15px;">Únete a una liga existente o
+                    crea la tuya para invitar amigos.</p>
+
+                <button onclick="window.controllers.leagues.openCreate()" class="btn-save"
+                    style="width:100%; margin-bottom:10px;">
+                    <i class="ri-add-line"></i> Crear Liga
                 </button>
-                <button onclick="window.controllers.leagues.openCreate()" class="nav-btn"
-                    style="width:auto; padding: 0 15px;">
-                    <i class="ri-add-line"></i> Crear
+                <button onclick="window.controllers.leagues.openJoin()" class="btn-cancel"
+                    style="width:100%; border-color:var(--text-muted); color:var(--text-main);">
+                    <i class="ri-login-box-line"></i> Unirse con Código
                 </button>
             </div>
-        </div>
 
-        <h1 style="margin-bottom: 5px;">Mis Ligas</h1>
-        <p class="subtitle">Compite con tus amigos.</p>
+            <div class="widget-card">
+                <h3><i class="ri-lightbulb-flash-line"></i> Tips</h3>
+                <ul style="list-style: none; padding: 0; font-size: 0.9em; color: var(--text-muted);">
+                    <li style="margin-bottom: 8px;">• El Admin de la liga decide qué partidos valen.</li>
+                    <li style="margin-bottom: 8px;">• Puedes estar en múltiples ligas a la vez.</li>
+                    <li>• ¡Copia el código y compártelo por WhatsApp!</li>
+                </ul>
+            </div>
 
-        <div id="leaguesContainer" style="display: flex; flex-direction: column; gap: 15px;">
-            <p style="text-align:center; color: var(--text-muted); margin-top: 20px;">Cargando...</p>
-        </div>
+            <div class="widget-card settings-widget" style="margin-top: 20px;">
+                <button id="logoutButtonWidget" class="settings-link logout">
+                    <i class="ri-logout-box-line"></i> Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <div class="bottom-nav-bar mobile-only">
+        <a href="/results.html" class="nav-icon-btn"><i class="ri-football-line"></i><span>Quiniela</span></a>
+        <a href="#" class="nav-icon-btn active"><i class="ri-trophy-fill"></i><span>Ligas</span></a>
+        <a href="/profile.html" class="nav-icon-btn"><i class="ri-user-3-line"></i><span>Perfil</span></a>
+        <button onclick="window.toggleModal('modalSettingsMobile', true)" class="nav-icon-btn"><i
+                class="ri-menu-line"></i><span>Menú</span></button>
     </div>
 
     <div id="modalCreate" class="modal-overlay hidden">
         <div class="modal-content">
-            <h2><i class="ri-trophy-line"></i> Nueva Liga</h2>
-            <p class="modal-help-text">Ponle un nombre épico a tu torneo.</p>
+            <h2><i class="ri-add-circle-line"></i> Nueva Liga</h2>
             <form id="formCreate">
-                <label>Nombre de la Liga:</label>
-                <input type="text" id="league_name" required placeholder="Ej: Los del Barrio">
-                <div class="modal-buttons">
-                    <button type="button" class="btn-cancel"
-                        onclick="window.toggleModal('modalCreate', false)">Cancelar</button>
-                    <button type="submit" class="btn-save">Crear</button>
-                </div>
+                <label>Nombre:</label><input type="text" id="league_name" required placeholder="Ej: Los del Barrio">
+                <div class="modal-buttons"><button type="button" class="btn-cancel"
+                        onclick="window.toggleModal('modalCreate', false)">Cancelar</button><button type="submit"
+                        class="btn-save">Crear</button></div>
             </form>
         </div>
     </div>
 
     <div id="modalJoin" class="modal-overlay hidden">
         <div class="modal-content">
-            <h2><i class="ri-ticket-line"></i> Unirse a Liga</h2>
-            <p class="modal-help-text">Ingresa el código de invitación.</p>
+            <h2><i class="ri-login-box-line"></i> Unirse</h2>
             <form id="formJoin">
-                <label>Código de Liga:</label>
-                <input type="text" id="league_code" required placeholder="Ej: ABCD12"
+                <label>Código:</label><input type="text" id="league_code" required placeholder="Ej: ABCD12"
                     style="text-transform: uppercase; text-align: center; font-size: 1.5em; letter-spacing: 3px;">
-                <div class="modal-buttons">
-                    <button type="button" class="btn-cancel"
-                        onclick="window.toggleModal('modalJoin', false)">Cancelar</button>
-                    <button type="submit" class="btn-save">Entrar</button>
-                </div>
+                <div class="modal-buttons"><button type="button" class="btn-cancel"
+                        onclick="window.toggleModal('modalJoin', false)">Cancelar</button><button type="submit"
+                        class="btn-save">Entrar</button></div>
             </form>
         </div>
     </div>
@@ -84,10 +143,8 @@
                     <tbody id="rankingBody"></tbody>
                 </table>
             </div>
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="window.toggleModal('modalRanking', false)"
-                    style="width:100%;">Cerrar</button>
-            </div>
+            <div class="modal-buttons"><button class="btn-cancel" onclick="window.toggleModal('modalRanking', false)"
+                    style="width:100%;">Cerrar</button></div>
         </div>
     </div>
 
@@ -95,10 +152,28 @@
         <div class="modal-content" style="max-width: 600px;">
             <h2><i class="ri-settings-3-line"></i> Gestionar: <span id="manageTitle"></span></h2>
             <div id="manageMatchesContainer" style="max-height: 400px; overflow-y: auto;"></div>
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="window.toggleModal('modalManageMatches', false)"
-                    style="width:100%;">Cerrar</button>
+            <div class="modal-buttons"><button class="btn-cancel"
+                    onclick="window.toggleModal('modalManageMatches', false)" style="width:100%;">Cerrar</button></div>
+        </div>
+    </div>
+
+    <div id="modalSettingsMobile" class="modal-overlay hidden mobile-only">
+        <div class="modal-content"
+            style="position: absolute; bottom: 0; width: 100%; border-radius: 20px 20px 0 0; max-width: none; padding-bottom: 40px;">
+            <h2>Menú</h2>
+            <div class="menu-grid" style="grid-template-columns: 1fr; gap: 10px;">
+                <div class="menu-card" onclick="window.location.href='/history.html'">
+                    <div><i class="ri-book-mark-line"></i></div><strong>Historia</strong>
+                </div>
+                <div id="btnAdminPanelMobile" class="menu-card hidden admin-link"
+                    onclick="window.location.href='/admin-panel.html'">
+                    <div><i class="ri-admin-line"></i></div><strong>Admin Panel</strong>
+                </div>
             </div>
+            <div class="mt-20"><button id="logoutButtonMobile" class="logout-btn" style="width: 100%;"><i
+                        class="ri-logout-box-line"></i> Cerrar Sesión</button></div>
+            <button class="btn-cancel mt-20" onclick="window.toggleModal('modalSettingsMobile', false)"
+                style="width: 100%;">Cerrar Menú</button>
         </div>
     </div>
 

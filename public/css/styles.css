@@ -43,7 +43,7 @@ body:has(.admin-table-container) {
 }
 
 /* ==========================================================================
-   2. ANIMACIONES
+   2. ANIMACIONES & UTILIDADES
    ========================================================================== */
 @keyframes fadeInPage {
     from {
@@ -103,7 +103,6 @@ body:has(.admin-table-container) {
     }
 }
 
-/* Transición Pestañas */
 .fade-content {
     transition: opacity 0.5s ease, transform 0.5s ease;
     opacity: 1;
@@ -153,7 +152,6 @@ body.page-exiting {
     margin-bottom: 15px;
 }
 
-/* Mensajes */
 .message-display {
     text-align: center;
     padding: 12px;
@@ -176,7 +174,7 @@ body.page-exiting {
 }
 
 /* ==========================================================================
-   3. COMPONENTES UI
+   3. COMPONENTES UI (GLOBAL)
    ========================================================================== */
 .container {
     background-color: var(--bg-card);
@@ -227,7 +225,6 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Formularios */
 form label {
     display: block;
     margin-bottom: 6px;
@@ -309,7 +306,6 @@ form label {
     color: var(--text-main);
 }
 
-/* Botones */
 button,
 .nav-btn,
 .logout-btn,
@@ -399,7 +395,6 @@ button[type="submit"]:hover,
     color: var(--text-main);
 }
 
-/* Loader */
 .loading-overlay {
     position: fixed;
     top: 0;
@@ -552,7 +547,7 @@ button[type="submit"]:hover,
 }
 
 /* ==========================================================================
-   5. QUINIELA & PARTIDOS (COMPACTO V8)
+   5. QUINIELA & PARTIDOS (COMPACTO)
    ========================================================================== */
 .matches-grid {
     display: grid;
@@ -667,7 +662,6 @@ button[type="submit"]:hover,
     border-top: 1px solid rgba(255, 215, 0, 0.2);
 }
 
-/* Filtros y Alertas */
 .alert-box {
     background: rgba(255, 215, 0, 0.1);
     border: 1px solid var(--warning);
@@ -924,7 +918,6 @@ tbody tr:hover {
     width: 100%;
 }
 
-/* Corrección Inputs en Modales */
 .modal-content input,
 .modal-content select,
 .modal-content textarea {
@@ -946,7 +939,7 @@ tbody tr:hover {
 }
 
 /* ==========================================================================
-   8. LOGIN V8
+   8. LOGIN V8 (TARJETA FLOTANTE UNIFICADA)
    ========================================================================== */
 .auth-container-v8 {
     display: flex;
@@ -1461,42 +1454,72 @@ tbody tr:hover {
 }
 
 /* ==========================================================================
-   10. RESPONSIVE
+   10. RESPONSIVE (OPTIMIZADO PARA MÓVIL)
    ========================================================================== */
 @media (max-width: 1024px) {
-    .profile-container-v8 {
-        grid-template-columns: 1fr;
-        gap: 25px;
-        margin-bottom: 60px;
+
+    /* 1. Ajuste del Body para Móvil */
+    body {
+        padding: 10px;
+        /* Reducimos el padding exterior drásticamente */
+        align-items: flex-start;
+        /* Alineamos todo arriba, no al centro */
+        height: auto;
+        /* Permitir scroll natural */
+        justify-content: center;
+        /* Asegurar centrado si es necesario */
     }
 
+    /* 2. Contenedor Principal */
+    .profile-container-v8 {
+        grid-template-columns: 1fr;
+        /* Una sola columna */
+        gap: 20px;
+        width: 100%;
+        max-width: 100%;
+        /* Ocupar todo el ancho disponible */
+        margin: 0;
+        margin-bottom: 80px;
+        /* Espacio vital para que la barra de abajo no tape contenido */
+        padding-bottom: 20px;
+    }
+
+    /* Ocultar elementos de PC */
     .desktop-only {
-        display: none;
+        display: none !important;
     }
 
     .mobile-only {
         display: flex !important;
     }
 
+    /* 3. Hero (Portada) Adaptado */
     .hero-banner {
-        height: 120px;
+        height: 100px;
     }
 
     .hero-content {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        margin-top: -50px;
+        margin-top: -40px;
+        padding: 0 20px 20px 20px;
     }
 
     .hero-avatar-container {
         margin-right: 0;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
+    }
+
+    .profile-avatar-hero {
+        width: 100px;
+        height: 100px;
+        font-size: 3em;
     }
 
     .hero-identity h1 {
         text-align: center;
-        font-size: 1.8em;
+        font-size: 1.6em;
     }
 
     .hero-location {
@@ -1505,14 +1528,19 @@ tbody tr:hover {
 
     .hero-stats-block {
         width: 100%;
-        max-width: 280px;
+        max-width: 100%;
         margin-top: 15px;
     }
 
+    /* 4. Login Móvil */
     .auth-container-v8 {
         flex-direction: column;
         height: auto;
-        max-width: 450px;
+        min-height: auto;
+        max-width: 100%;
+        border: none;
+        background: transparent;
+        box-shadow: none;
     }
 
     .auth-hero-section {
@@ -1520,11 +1548,77 @@ tbody tr:hover {
     }
 
     .auth-form-section {
-        padding: 30px 20px;
+        padding: 0;
+        background: transparent;
+        align-items: flex-start;
+        padding-top: 20px;
+    }
+
+    .form-wrapper {
+        background: var(--bg-card);
+        padding: 30px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        width: 100%;
+        max-width: 100%;
     }
 
     .mobile-brand-header {
         display: block !important;
+    }
+
+    /* 5. Quiniela Header Móvil */
+    .quiniela-hero {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .quiniela-content {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .quiniela-content h1 {
+        text-align: center;
+        font-size: 1.8em;
+    }
+
+    .hero-icon {
+        display: none;
+    }
+
+    /* Ocultar icono grande para ahorrar espacio */
+
+    /* 6. Barra de Navegación (Asegurar que flote bien) */
+    .bottom-nav-bar {
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        background: rgba(26, 26, 26, 0.98);
+    }
+
+    /* 7. Ajuste específico para Tarjetas de Partido en Móvil (Más compactas) */
+    .match-card {
+        font-size: 0.85em;
+        /* Reducir fuente base */
+        margin-bottom: 0;
+        /* Grid se encarga del espacio */
+    }
+
+    .match-body {
+        padding: 12px;
+        /* Reducir padding interno */
+    }
+
+    .team-avatar {
+        width: 35px;
+        height: 35px;
+        /* Escudos un poco más pequeños */
+        font-size: 1em;
+    }
+
+    .score-input-modern {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
     }
 }
 
