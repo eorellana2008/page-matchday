@@ -60,7 +60,7 @@ Crea la base de datos:
 
 SQL
 
-CREATE DATABASE matchday_db;
+CREATE DATABASE elevn_db;
 Importar Tablas: Abre el archivo de script SQL proporcionado (o copia el esquema) y ejecútalo en tu cliente SQL para crear las tablas (users, matches, leagues, etc.) y poblar los catálogos iniciales.
 
 Tip de Solución de Problemas: Si tienes problemas al conectar, verifica que el servicio de MySQL esté corriendo y que el puerto (usualmente 3306) no esté ocupado.
@@ -76,8 +76,8 @@ PORT=3000
 DB_HOST=localhost
 DB_USER=tu_usuario_mysql
 DB_PASSWORD=tu_contraseña_mysql
-DB_NAME=matchday_db
-DB_PORT=3306
+DB_NAME=elevn_db
+DB_PORT=3000
 
 # Seguridad (JWT)
 JWT_SECRET=clave_secreta_para_tokens_123
